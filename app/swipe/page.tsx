@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect } from "react"
-import { X, Heart, Shirt, Filter } from "lucide-react"
+import { X, Heart, Shirt, Filter, ChevronLeft, ChevronRight } from "lucide-react"
 import AnimatedBackground from "../components/AnimatedBackground"
 
 interface Product {
@@ -176,6 +176,14 @@ export default function SwipePage() {
     setCurrentProduct(nextProduct)
   }
 
+  const handleNavigation = (direction: "left" | "right") => {
+    if (!currentProduct) return
+
+    // Just navigate to next product without liking
+    const nextProduct = getRandomProduct()
+    setCurrentProduct(nextProduct)
+  }
+
   const getOccasionFromType = (type: string): string => {
     const typeMap: { [key: string]: string } = {
       'T-Shirt': 'Casual',
@@ -276,8 +284,33 @@ export default function SwipePage() {
           </div>
         </div>
 
-        {/* Product Card */}
+        {/* Product Card with Side Navigation */}
         <div className="relative">
+          {/* Left Swipe Button - Positioned outside left edge */}
+          <button
+            onClick={() => handleNavigation("left")}
+            className="absolute left-[-70px] top-1/2 transform -translate-y-1/2 w-14 h-14 rounded-full glass-card flex items-center justify-center hover:bg-white/20 transition-all duration-300 hover:scale-110 group z-10"
+            aria-label="Swipe left"
+          >
+            <ChevronLeft 
+              className="text-gray-400 group-hover:text-red-400 transition-colors duration-300" 
+              size={28} 
+            />
+          </button>
+
+          {/* Right Swipe Button - Positioned outside right edge */}
+          <button
+            onClick={() => handleNavigation("right")}
+            className="absolute right-[-70px] top-1/2 transform -translate-y-1/2 w-14 h-14 rounded-full glass-card flex items-center justify-center hover:bg-white/20 transition-all duration-300 hover:scale-110 group z-10"
+            aria-label="Swipe right"
+          >
+            <ChevronRight 
+              className="text-gray-400 group-hover:text-green-400 transition-colors duration-300" 
+              size={28} 
+            />
+          </button>
+
+          {/* Product Card - Back to original full width */}
           <div className="glass-card rounded-3xl overflow-hidden mb-6 transform transition-all duration-300 hover:scale-105">
             <div className="relative">
               <img 
@@ -329,7 +362,7 @@ export default function SwipePage() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-center gap-4">
+        <div className="flex justify-center gap-4 mt-6">
           <button
             onClick={() => handleSwipe("left")}
             className="w-14 h-14 rounded-full bg-gradient-to-r from-red-500 to-pink-500 flex items-center justify-center animate-pulse-glow"
