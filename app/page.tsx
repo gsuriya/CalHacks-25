@@ -28,6 +28,12 @@ export default function HomePage() {
       // Stop existing stream if any
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop())
+        streamRef.current = null
+      }
+
+      // Stop video element first to prevent AbortError
+      if (videoRef.current) {
+        videoRef.current.srcObject = null
       }
 
       const constraints = {
@@ -44,7 +50,13 @@ export default function HomePage() {
       
       if (videoRef.current) {
         videoRef.current.srcObject = stream
-        videoRef.current.play()
+        // Wait for video to be ready before playing
+        try {
+          await videoRef.current.play()
+        } catch (playError) {
+          console.warn('Video play error (non-critical):', playError)
+          // Don't throw error for play issues as they're often browser-specific
+        }
       }
       
       setCameraEnabled(true)
@@ -136,6 +148,9 @@ export default function HomePage() {
 
   return (
     <div className="relative h-screen overflow-hidden">
+      {/* Animated Background - Always present */}
+      <AnimatedBackground />
+      
       {/* Camera Feed - Full Screen */}
       <div className="absolute inset-0">
         {cameraEnabled ? (
@@ -147,7 +162,7 @@ export default function HomePage() {
             muted
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-gray-900 to-black flex items-center justify-center">
+          <div className="w-full h-full flex items-center justify-center">
             <div className="text-center">
               <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center animate-pulse-glow">
                 <Camera size={48} className="text-white" />

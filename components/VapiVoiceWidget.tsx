@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Vapi from '@vapi-ai/web';
 import { VAPI_CONFIG } from '../lib/vapi-config';
 
@@ -25,9 +25,44 @@ const VapiVoiceWidget: React.FC<VapiVoiceWidgetProps> = ({
   const [isConnected, setIsConnected] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [transcript, setTranscript] = useState<Array<{role: string, text: string}>>([]);
+  
+  // Use refs to avoid stale closures in event handlers
+  const isConnectedRef = useRef(isConnected);
+  const isSpeakingRef = useRef(isSpeaking);
+  
+  // Update refs when state changes
+  useEffect(() => {
+    isConnectedRef.current = isConnected;
+  }, [isConnected]);
+  
+  useEffect(() => {
+    isSpeakingRef.current = isSpeaking;
+  }, [isSpeaking]);
 
   // Use the provided API key or get from environment/config
   const effectiveApiKey = apiKey || VAPI_CONFIG.API_KEY || "demo_key_replace_with_real_key";
+
+  // Memoize callbacks to prevent unnecessary re-renders
+  const handleConnectionChange = useCallback((connected: boolean) => {
+    if (onConnectionChange) {
+      // Use setTimeout to avoid calling setState during render
+      setTimeout(() => onConnectionChange(connected), 0);
+    }
+  }, [onConnectionChange]);
+
+  const handleSpeakingChange = useCallback((speaking: boolean) => {
+    if (onSpeakingChange) {
+      // Use setTimeout to avoid calling setState during render
+      setTimeout(() => onSpeakingChange(speaking), 0);
+    }
+  }, [onSpeakingChange]);
+
+  const handleTranscriptUpdate = useCallback((newTranscript: Array<{role: string, text: string}>) => {
+    if (onTranscriptUpdate) {
+      // Use setTimeout to avoid calling setState during render
+      setTimeout(() => onTranscriptUpdate(newTranscript), 0);
+    }
+  }, [onTranscriptUpdate]);
 
   useEffect(() => {
     const vapiInstance = new Vapi(effectiveApiKey);
@@ -37,27 +72,27 @@ const VapiVoiceWidget: React.FC<VapiVoiceWidgetProps> = ({
     vapiInstance.on('call-start', () => {
       console.log('Fashion voice agent call started');
       setIsConnected(true);
-      onConnectionChange?.(true);
+      handleConnectionChange(true);
     });
 
     vapiInstance.on('call-end', () => {
       console.log('Fashion voice agent call ended');
       setIsConnected(false);
       setIsSpeaking(false);
-      onConnectionChange?.(false);
-      onSpeakingChange?.(false);
+      handleConnectionChange(false);
+      handleSpeakingChange(false);
     });
 
     vapiInstance.on('speech-start', () => {
       console.log('Fashion assistant started speaking');
       setIsSpeaking(true);
-      onSpeakingChange?.(true);
+      handleSpeakingChange(true);
     });
 
     vapiInstance.on('speech-end', () => {
       console.log('Fashion assistant stopped speaking');
       setIsSpeaking(false);
-      onSpeakingChange?.(false);
+      handleSpeakingChange(false);
     });
 
     vapiInstance.on('message', (message) => {
@@ -67,7 +102,7 @@ const VapiVoiceWidget: React.FC<VapiVoiceWidgetProps> = ({
             role: message.role,
             text: message.transcript
           }];
-          onTranscriptUpdate?.(updated);
+          handleTranscriptUpdate(updated);
           return updated;
         });
       }
@@ -77,14 +112,14 @@ const VapiVoiceWidget: React.FC<VapiVoiceWidgetProps> = ({
       console.error('Vapi error:', error);
       setIsConnected(false);
       setIsSpeaking(false);
-      onConnectionChange?.(false);
-      onSpeakingChange?.(false);
+      handleConnectionChange(false);
+      handleSpeakingChange(false);
     });
 
     return () => {
       vapiInstance?.stop();
     };
-  }, [effectiveApiKey, onTranscriptUpdate, onConnectionChange, onSpeakingChange]);
+  }, [effectiveApiKey, handleTranscriptUpdate, handleConnectionChange, handleSpeakingChange]);
 
   // Handle enabling/disabling the voice agent based on mic state
   useEffect(() => {
