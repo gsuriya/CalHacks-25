@@ -130,6 +130,9 @@ export default function HomePage() {
 
   return (
     <div className="relative h-screen overflow-hidden">
+      {/* Animated Background */}
+      <AnimatedBackground />
+
       {/* Camera Feed - Full Screen */}
       <div className="absolute inset-0">
         {cameraEnabled ? (
