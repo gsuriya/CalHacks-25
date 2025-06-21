@@ -1,0 +1,1865 @@
+{
+  "1": {
+    "color": "pastel blue",
+    "price": 99.75,
+    "store": "scarf",
+    "inStock": 77,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "2": {
+    "color": "any color",
+    "price": 26.62,
+    "store": "t-shirt",
+    "inStock": 16,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "3": {
+    "color": "yellow",
+    "price": 32.74,
+    "store": "t-shirt",
+    "inStock": 68,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "4": {
+    "color": "cream",
+    "price": 20.21,
+    "store": "t-shirt",
+    "inStock": 39,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "5": {
+    "color": "burgundy",
+    "price": 79.16,
+    "store": "sweater",
+    "inStock": 38,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "6": {
+    "color": "burgundy",
+    "price": 60.22,
+    "store": "sweater",
+    "inStock": 18,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "7": {
+    "color": "cream",
+    "price": 24.85,
+    "store": "t-shirt",
+    "inStock": 82,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "8": {
+    "color": "cream",
+    "price": 40.35,
+    "store": "long sleeve",
+    "inStock": 55,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "9": {
+    "color": "yellow",
+    "price": 34.77,
+    "store": "t-shirt",
+    "inStock": 15,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "10": {
+    "color": "black",
+    "price": 34.19,
+    "store": "t-shirt",
+    "inStock": 1,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "11": {
+    "color": "gray",
+    "price": 20.92,
+    "store": "t-shirt",
+    "inStock": 96,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "12": {
+    "color": "black",
+    "price": 35.86,
+    "store": "t-shirt",
+    "inStock": 27,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "13": {
+    "color": "white",
+    "price": 34.57,
+    "store": "t-shirt",
+    "inStock": 87,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "14": {
+    "color": "any color",
+    "price": 25.05,
+    "store": "t-shirt",
+    "inStock": 29,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "15": {
+    "color": "pastel blue",
+    "price": 104.89,
+    "store": "scarf",
+    "inStock": 65,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "16": {
+    "color": "white",
+    "price": 36.52,
+    "store": "t-shirt",
+    "inStock": 93,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "17": {
+    "color": "black",
+    "price": 20.25,
+    "store": "t-shirt",
+    "inStock": 40,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "18": {
+    "color": "white",
+    "price": 39.29,
+    "store": "t-shirt",
+    "inStock": 12,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "19": {
+    "color": "black",
+    "price": 36.59,
+    "store": "t-shirt",
+    "inStock": 16,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "20": {
+    "color": "gray",
+    "price": 38.25,
+    "store": "t-shirt",
+    "inStock": 68,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "21": {
+    "color": "yellow",
+    "price": 37.57,
+    "store": "t-shirt",
+    "inStock": 35,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "22": {
+    "color": "ocean blue",
+    "price": 29.31,
+    "store": "t-shirt",
+    "inStock": 71,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "23": {
+    "color": "gray",
+    "price": 48.71,
+    "store": "long sleeve",
+    "inStock": 20,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "24": {
+    "color": "any color",
+    "price": 104.61,
+    "store": "scarf",
+    "inStock": 53,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "25": {
+    "color": "cream",
+    "price": 38.07,
+    "store": "t-shirt",
+    "inStock": 64,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "26": {
+    "color": "burgundy",
+    "price": 78.06,
+    "store": "sweater",
+    "inStock": 13,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "27": {
+    "color": "gray",
+    "price": 33.96,
+    "store": "t-shirt",
+    "inStock": 21,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "28": {
+    "color": "black",
+    "price": 38.38,
+    "store": "t-shirt",
+    "inStock": 59,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "29": {
+    "color": "white",
+    "price": 36.46,
+    "store": "t-shirt",
+    "inStock": 3,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "30": {
+    "color": "any color",
+    "price": 31.94,
+    "store": "t-shirt",
+    "inStock": 97,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "31": {
+    "color": "purple",
+    "price": 23.4,
+    "store": "t-shirt",
+    "inStock": 69,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "32": {
+    "color": "black",
+    "price": 23.67,
+    "store": "t-shirt",
+    "inStock": 49,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "33": {
+    "color": "pastel blue",
+    "price": 107.76,
+    "store": "scarf",
+    "inStock": 87,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "34": {
+    "color": "white",
+    "price": 27.58,
+    "store": "t-shirt",
+    "inStock": 51,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "35": {
+    "color": "navy",
+    "price": 34.28,
+    "store": "long sleeve",
+    "inStock": 71,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "36": {
+    "color": "yellow",
+    "price": 39.15,
+    "store": "t-shirt",
+    "inStock": 57,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "37": {
+    "color": "ocean blue",
+    "price": 22.44,
+    "store": "t-shirt",
+    "inStock": 68,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "38": {
+    "color": "cream",
+    "price": 36.99,
+    "store": "long sleeve",
+    "inStock": 27,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "39": {
+    "color": "gray",
+    "price": 32.49,
+    "store": "long sleeve",
+    "inStock": 53,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "40": {
+    "color": "cream",
+    "price": 23.77,
+    "store": "t-shirt",
+    "inStock": 37,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "41": {
+    "color": "burgundy",
+    "price": 80.46,
+    "store": "sweater",
+    "inStock": 63,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "42": {
+    "color": "any color",
+    "price": 98.56,
+    "store": "scarf",
+    "inStock": 39,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "43": {
+    "color": "cream",
+    "price": 34.76,
+    "store": "long sleeve",
+    "inStock": 1,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "44": {
+    "color": "navy",
+    "price": 30.65,
+    "store": "long sleeve",
+    "inStock": 10,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "45": {
+    "color": "purple",
+    "price": 27.85,
+    "store": "t-shirt",
+    "inStock": 46,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "46": {
+    "color": "any color",
+    "price": 26.42,
+    "store": "t-shirt",
+    "inStock": 64,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "47": {
+    "color": "white",
+    "price": 39,
+    "store": "t-shirt",
+    "inStock": 80,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "48": {
+    "color": "pastel blue",
+    "price": 69.52,
+    "store": "scarf",
+    "inStock": 27,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "49": {
+    "color": "purple",
+    "price": 20.56,
+    "store": "t-shirt",
+    "inStock": 47,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "50": {
+    "color": "navy",
+    "price": 42.86,
+    "store": "long sleeve",
+    "inStock": 5,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "51": {
+    "color": "ocean blue",
+    "price": 38.74,
+    "store": "t-shirt",
+    "inStock": 73,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "52": {
+    "color": "gray",
+    "price": 35.73,
+    "store": "long sleeve",
+    "inStock": 16,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "53": {
+    "color": "any color",
+    "price": 121.81,
+    "store": "scarf",
+    "inStock": 93,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "54": {
+    "color": "any color",
+    "price": 118.37,
+    "store": "scarf",
+    "inStock": 54,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "55": {
+    "color": "gray",
+    "price": 39.97,
+    "store": "long sleeve",
+    "inStock": 25,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "56": {
+    "color": "cream",
+    "price": 33.76,
+    "store": "long sleeve",
+    "inStock": 48,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "57": {
+    "color": "ocean blue",
+    "price": 28.86,
+    "store": "t-shirt",
+    "inStock": 10,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "58": {
+    "color": "black",
+    "price": 26.11,
+    "store": "t-shirt",
+    "inStock": 6,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "59": {
+    "color": "gray",
+    "price": 20.26,
+    "store": "t-shirt",
+    "inStock": 77,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "60": {
+    "color": "black",
+    "price": 35.34,
+    "store": "t-shirt",
+    "inStock": 7,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "61": {
+    "color": "white",
+    "price": 32.34,
+    "store": "t-shirt",
+    "inStock": 8,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "62": {
+    "color": "purple",
+    "price": 34.59,
+    "store": "t-shirt",
+    "inStock": 64,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "63": {
+    "color": "white",
+    "price": 20.44,
+    "store": "t-shirt",
+    "inStock": 28,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "64": {
+    "color": "black",
+    "price": 30.96,
+    "store": "long sleeve",
+    "inStock": 42,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "65": {
+    "color": "vintage blue",
+    "price": 38.61,
+    "store": "t-shirt",
+    "inStock": 75,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "66": {
+    "color": "white",
+    "price": 25.74,
+    "store": "t-shirt",
+    "inStock": 83,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "67": {
+    "color": "terracotta",
+    "price": 70.56,
+    "store": "scarf",
+    "inStock": 76,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "68": {
+    "color": "white",
+    "price": 39.05,
+    "store": "long sleeve",
+    "inStock": 88,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "69": {
+    "color": "beige",
+    "price": 36.5,
+    "store": "t-shirt",
+    "inStock": 86,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "70": {
+    "color": "navy",
+    "price": 75.24,
+    "store": "sweater",
+    "inStock": 55,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "71": {
+    "color": "black",
+    "price": 36.38,
+    "store": "t-shirt",
+    "inStock": 56,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "72": {
+    "color": "burgundy",
+    "price": 41.03,
+    "store": "long sleeve",
+    "inStock": 96,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "73": {
+    "color": "burgundy",
+    "price": 30.24,
+    "store": "long sleeve",
+    "inStock": 94,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "74": {
+    "color": "vintage blue",
+    "price": 37.79,
+    "store": "t-shirt",
+    "inStock": 62,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "75": {
+    "color": "black",
+    "price": 32.39,
+    "store": "long sleeve",
+    "inStock": 72,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "76": {
+    "color": "sage green",
+    "price": 21.31,
+    "store": "t-shirt",
+    "inStock": 71,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "77": {
+    "color": "terracotta",
+    "price": 96.71,
+    "store": "scarf",
+    "inStock": 55,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "78": {
+    "color": "beige",
+    "price": 20.44,
+    "store": "t-shirt",
+    "inStock": 13,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "79": {
+    "color": "white",
+    "price": 43.38,
+    "store": "long sleeve",
+    "inStock": 87,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "80": {
+    "color": "beige",
+    "price": 23.95,
+    "store": "t-shirt",
+    "inStock": 100,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "81": {
+    "color": "white",
+    "price": 34.08,
+    "store": "long sleeve",
+    "inStock": 77,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "82": {
+    "color": "terracotta",
+    "price": 107.31,
+    "store": "scarf",
+    "inStock": 71,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "83": {
+    "color": "black",
+    "price": 47.28,
+    "store": "long sleeve",
+    "inStock": 52,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "84": {
+    "color": "vintage blue",
+    "price": 24.21,
+    "store": "t-shirt",
+    "inStock": 76,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "85": {
+    "color": "burgundy",
+    "price": 47.37,
+    "store": "long sleeve",
+    "inStock": 63,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "86": {
+    "color": "black",
+    "price": 26.78,
+    "store": "t-shirt",
+    "inStock": 86,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "87": {
+    "color": "terracotta",
+    "price": 35.19,
+    "store": "long sleeve",
+    "inStock": 64,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "88": {
+    "color": "navy",
+    "price": 54.79,
+    "store": "sweater",
+    "inStock": 21,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "89": {
+    "color": "white",
+    "price": 33.94,
+    "store": "t-shirt",
+    "inStock": 89,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "90": {
+    "color": "red",
+    "price": 37.51,
+    "store": "t-shirt",
+    "inStock": 30,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "91": {
+    "color": "sage green",
+    "price": 31.17,
+    "store": "t-shirt",
+    "inStock": 27,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "92": {
+    "color": "white",
+    "price": 33.07,
+    "store": "t-shirt",
+    "inStock": 27,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "93": {
+    "color": "navy",
+    "price": 56,
+    "store": "sweater",
+    "inStock": 74,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "94": {
+    "color": "terracotta",
+    "price": 41.09,
+    "store": "long sleeve",
+    "inStock": 62,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "95": {
+    "color": "black",
+    "price": 34.28,
+    "store": "t-shirt",
+    "inStock": 9,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "96": {
+    "color": "black",
+    "price": 45.3,
+    "store": "long sleeve",
+    "inStock": 49,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "97": {
+    "color": "vintage blue",
+    "price": 34.79,
+    "store": "t-shirt",
+    "inStock": 18,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "98": {
+    "color": "terracotta",
+    "price": 38.53,
+    "store": "long sleeve",
+    "inStock": 66,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "99": {
+    "color": "terracotta",
+    "price": 64.84,
+    "store": "scarf",
+    "inStock": 56,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "100": {
+    "color": "red",
+    "price": 33.87,
+    "store": "t-shirt",
+    "inStock": 45,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "101": {
+    "color": "sage green",
+    "price": 24.78,
+    "store": "t-shirt",
+    "inStock": 22,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "102": {
+    "color": "white",
+    "price": 39.56,
+    "store": "t-shirt",
+    "inStock": 14,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "103": {
+    "color": "beige",
+    "price": 26.92,
+    "store": "t-shirt",
+    "inStock": 5,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "104": {
+    "color": "sage green",
+    "price": 37.87,
+    "store": "t-shirt",
+    "inStock": 50,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "105": {
+    "color": "navy",
+    "price": 82.25,
+    "store": "sweater",
+    "inStock": 50,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "106": {
+    "color": "black",
+    "price": 22.9,
+    "store": "t-shirt",
+    "inStock": 32,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "107": {
+    "color": "burgundy",
+    "price": 36.21,
+    "store": "long sleeve",
+    "inStock": 22,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "108": {
+    "color": "any color",
+    "price": 84.15,
+    "store": "sweater",
+    "inStock": 2,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "109": {
+    "color": "charcoal",
+    "price": 56.05,
+    "store": "sweater",
+    "inStock": 51,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "110": {
+    "color": "mint green",
+    "price": 28.18,
+    "store": "t-shirt",
+    "inStock": 36,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "111": {
+    "color": "burgundy",
+    "price": 63.29,
+    "store": "scarf",
+    "inStock": 47,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "112": {
+    "color": "burgundy",
+    "price": 99.49,
+    "store": "scarf",
+    "inStock": 45,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "113": {
+    "color": "mint green",
+    "price": 33.06,
+    "store": "t-shirt",
+    "inStock": 9,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "114": {
+    "color": "white",
+    "price": 32.81,
+    "store": "long sleeve",
+    "inStock": 5,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "115": {
+    "color": "light green",
+    "price": 36.47,
+    "store": "t-shirt",
+    "inStock": 9,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "116": {
+    "color": "navy",
+    "price": 69.33,
+    "store": "sweater",
+    "inStock": 71,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "117": {
+    "color": "black",
+    "price": 103.66,
+    "store": "scarf",
+    "inStock": 42,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "118": {
+    "color": "sage green",
+    "price": 31.57,
+    "store": "long sleeve",
+    "inStock": 44,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "119": {
+    "color": "light colored",
+    "price": 26.29,
+    "store": "t-shirt",
+    "inStock": 72,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "120": {
+    "color": "any color",
+    "price": 51.57,
+    "store": "sweater",
+    "inStock": 8,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "121": {
+    "color": "sage green",
+    "price": 33.47,
+    "store": "long sleeve",
+    "inStock": 19,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "122": {
+    "color": "dark blue",
+    "price": 33.54,
+    "store": "t-shirt",
+    "inStock": 69,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "123": {
+    "color": "navy",
+    "price": 64.9,
+    "store": "sweater",
+    "inStock": 90,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "124": {
+    "color": "charcoal",
+    "price": 71.48,
+    "store": "sweater",
+    "inStock": 43,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "125": {
+    "color": "white",
+    "price": 42.32,
+    "store": "long sleeve",
+    "inStock": 41,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "126": {
+    "color": "mint green",
+    "price": 22.43,
+    "store": "t-shirt",
+    "inStock": 66,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "127": {
+    "color": "cream",
+    "price": 70.79,
+    "store": "sweater",
+    "inStock": 64,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "128": {
+    "color": "gray",
+    "price": 89.1,
+    "store": "scarf",
+    "inStock": 80,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "129": {
+    "color": "black",
+    "price": 76.53,
+    "store": "scarf",
+    "inStock": 15,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "130": {
+    "color": "burgundy",
+    "price": 70.62,
+    "store": "scarf",
+    "inStock": 11,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "131": {
+    "color": "white",
+    "price": 44.59,
+    "store": "long sleeve",
+    "inStock": 61,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "132": {
+    "color": "charcoal",
+    "price": 57.64,
+    "store": "sweater",
+    "inStock": 89,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "133": {
+    "color": "navy",
+    "price": 65.78,
+    "store": "sweater",
+    "inStock": 41,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "134": {
+    "color": "sage green",
+    "price": 49.22,
+    "store": "long sleeve",
+    "inStock": 96,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "135": {
+    "color": "light colored",
+    "price": 22.06,
+    "store": "t-shirt",
+    "inStock": 81,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "136": {
+    "color": "black",
+    "price": 125.48,
+    "store": "scarf",
+    "inStock": 21,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "137": {
+    "color": "dark blue",
+    "price": 34.03,
+    "store": "t-shirt",
+    "inStock": 12,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "138": {
+    "color": "light green",
+    "price": 28.24,
+    "store": "t-shirt",
+    "inStock": 47,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "139": {
+    "color": "mint green",
+    "price": 32.33,
+    "store": "t-shirt",
+    "inStock": 95,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "140": {
+    "color": "cream",
+    "price": 89.29,
+    "store": "sweater",
+    "inStock": 16,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "141": {
+    "color": "gray",
+    "price": 118.04,
+    "store": "scarf",
+    "inStock": 21,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "142": {
+    "color": "black",
+    "price": 100.11,
+    "store": "scarf",
+    "inStock": 4,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "143": {
+    "color": "burgundy",
+    "price": 124,
+    "store": "scarf",
+    "inStock": 57,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "144": {
+    "color": "light green",
+    "price": 33.42,
+    "store": "t-shirt",
+    "inStock": 6,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "145": {
+    "color": "black",
+    "price": 88.51,
+    "store": "scarf",
+    "inStock": 6,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "146": {
+    "color": "light colored",
+    "price": 28.96,
+    "store": "t-shirt",
+    "inStock": 3,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "147": {
+    "color": "dark blue",
+    "price": 37.03,
+    "store": "t-shirt",
+    "inStock": 7,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "148": {
+    "color": "charcoal",
+    "price": 70.32,
+    "store": "sweater",
+    "inStock": 22,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "149": {
+    "color": "cream",
+    "price": 51.67,
+    "store": "sweater",
+    "inStock": 29,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "150": {
+    "color": "gray",
+    "price": 107.15,
+    "store": "scarf",
+    "inStock": 1,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "151": {
+    "color": "black",
+    "price": 92.7,
+    "store": "scarf",
+    "inStock": 6,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "152": {
+    "color": "black",
+    "price": 93.33,
+    "store": "scarf",
+    "inStock": 33,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "153": {
+    "color": "gray",
+    "price": 101.26,
+    "store": "scarf",
+    "inStock": 81,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "154": {
+    "color": "cream",
+    "price": 58.49,
+    "store": "sweater",
+    "inStock": 16,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "155": {
+    "color": "light green",
+    "price": 27.07,
+    "store": "t-shirt",
+    "inStock": 39,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "156": {
+    "color": "white",
+    "price": 46.05,
+    "store": "long sleeve",
+    "inStock": 10,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "157": {
+    "color": "dark blue",
+    "price": 23.79,
+    "store": "t-shirt",
+    "inStock": 11,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "158": {
+    "color": "navy",
+    "price": 71.78,
+    "store": "sweater",
+    "inStock": 84,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "159": {
+    "color": "black",
+    "price": 128.28,
+    "store": "scarf",
+    "inStock": 78,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "160": {
+    "color": "sage green",
+    "price": 33.64,
+    "store": "long sleeve",
+    "inStock": 78,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "161": {
+    "color": "light colored",
+    "price": 29.74,
+    "store": "t-shirt",
+    "inStock": 8,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "162": {
+    "color": "cream",
+    "price": 50.78,
+    "store": "sweater",
+    "inStock": 44,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "163": {
+    "color": "forest green",
+    "price": 59.48,
+    "store": "sweater",
+    "inStock": 7,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "164": {
+    "color": "cream",
+    "price": 92.92,
+    "store": "scarf",
+    "inStock": 38,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "165": {
+    "color": "white",
+    "price": 125.47,
+    "store": "scarf",
+    "inStock": 26,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "166": {
+    "color": "camel",
+    "price": 60.59,
+    "store": "sweater",
+    "inStock": 12,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "167": {
+    "color": "gray",
+    "price": 53.21,
+    "store": "sweater",
+    "inStock": 48,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "168": {
+    "color": "forest green",
+    "price": 50.04,
+    "store": "sweater",
+    "inStock": 23,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "169": {
+    "color": "cream",
+    "price": 77.04,
+    "store": "sweater",
+    "inStock": 70,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "170": {
+    "color": "navy",
+    "price": 33.79,
+    "store": "long sleeve",
+    "inStock": 14,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "171": {
+    "color": "navy",
+    "price": 45.93,
+    "store": "long sleeve",
+    "inStock": 82,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "172": {
+    "color": "navy blue",
+    "price": 31.34,
+    "store": "t-shirt",
+    "inStock": 95,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "173": {
+    "color": "cream",
+    "price": 66.31,
+    "store": "sweater",
+    "inStock": 96,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "174": {
+    "color": "cream",
+    "price": 109.47,
+    "store": "scarf",
+    "inStock": 40,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "175": {
+    "color": "white",
+    "price": 67.92,
+    "store": "scarf",
+    "inStock": 83,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "176": {
+    "color": "navy",
+    "price": 81.05,
+    "store": "scarf",
+    "inStock": 35,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "177": {
+    "color": "white",
+    "price": 126.06,
+    "store": "scarf",
+    "inStock": 80,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "178": {
+    "color": "burgundy",
+    "price": 64.36,
+    "store": "sweater",
+    "inStock": 38,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "179": {
+    "color": "cream",
+    "price": 118.47,
+    "store": "scarf",
+    "inStock": 13,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "180": {
+    "color": "forest green",
+    "price": 50.49,
+    "store": "sweater",
+    "inStock": 79,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "181": {
+    "color": "sage green",
+    "price": 88.72,
+    "store": "scarf",
+    "inStock": 24,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "182": {
+    "color": "navy",
+    "price": 34.63,
+    "store": "long sleeve",
+    "inStock": 51,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "183": {
+    "color": "cream",
+    "price": 87.01,
+    "store": "sweater",
+    "inStock": 27,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "184": {
+    "color": "navy blue",
+    "price": 25.79,
+    "store": "t-shirt",
+    "inStock": 91,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "185": {
+    "color": "gray",
+    "price": 78.01,
+    "store": "sweater",
+    "inStock": 61,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "186": {
+    "color": "camel",
+    "price": 89.01,
+    "store": "sweater",
+    "inStock": 40,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "187": {
+    "color": "any color",
+    "price": 36.49,
+    "store": "long sleeve",
+    "inStock": 25,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "188": {
+    "color": "any color",
+    "price": 40.76,
+    "store": "long sleeve",
+    "inStock": 85,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "189": {
+    "color": "navy",
+    "price": 119.55,
+    "store": "scarf",
+    "inStock": 19,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "190": {
+    "color": "camel",
+    "price": 64.08,
+    "store": "sweater",
+    "inStock": 87,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "191": {
+    "color": "burgundy",
+    "price": 50.34,
+    "store": "sweater",
+    "inStock": 9,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "192": {
+    "color": "gray",
+    "price": 79.47,
+    "store": "sweater",
+    "inStock": 2,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "193": {
+    "color": "forest green",
+    "price": 81.53,
+    "store": "sweater",
+    "inStock": 61,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "194": {
+    "color": "sage green",
+    "price": 80.29,
+    "store": "scarf",
+    "inStock": 22,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "195": {
+    "color": "navy blue",
+    "price": 24.25,
+    "store": "t-shirt",
+    "inStock": 44,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "196": {
+    "color": "sage green",
+    "price": 69.86,
+    "store": "scarf",
+    "inStock": 71,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "197": {
+    "color": "burgundy",
+    "price": 73.04,
+    "store": "sweater",
+    "inStock": 88,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "198": {
+    "color": "cream",
+    "price": 64.59,
+    "store": "scarf",
+    "inStock": 42,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "199": {
+    "color": "navy",
+    "price": 119.01,
+    "store": "scarf",
+    "inStock": 24,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "200": {
+    "color": "white",
+    "price": 73.74,
+    "store": "scarf",
+    "inStock": 88,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "201": {
+    "color": "any color",
+    "price": 49.62,
+    "store": "long sleeve",
+    "inStock": 2,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "202": {
+    "color": "camel",
+    "price": 72.62,
+    "store": "sweater",
+    "inStock": 11,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "203": {
+    "color": "navy",
+    "price": 65.49,
+    "store": "scarf",
+    "inStock": 9,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "204": {
+    "color": "burgundy",
+    "price": 88.3,
+    "store": "sweater",
+    "inStock": 49,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "205": {
+    "color": "gray",
+    "price": 88.79,
+    "store": "sweater",
+    "inStock": 99,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "206": {
+    "color": "sage green",
+    "price": 108.67,
+    "store": "scarf",
+    "inStock": 52,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  },
+  "207": {
+    "color": "navy blue",
+    "price": 23.46,
+    "store": "t-shirt",
+    "inStock": 25,
+    "material": "",
+    "occasion": "",
+    "season": ""
+  }
+}

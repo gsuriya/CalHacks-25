@@ -1,8 +1,16 @@
 "use client"
-import { useState, useEffect, useRef } from "react"
-import { X, Heart, Shirt, Filter, ChevronLeft, ChevronRight, Camera, Palette } from "lucide-react"
+import { useState, useEffect } from "react"
+import { X, Heart, Shirt, Filter, ChevronLeft, ChevronRight, Palette } from "lucide-react"
 import AnimatedBackground from "../components/AnimatedBackground"
-import { analyzeSkinTone, isColorMatch, getSkinToneDescription, SkinToneAnalysis } from "../../lib/skin-tone-analysis"
+import { isColorMatch, getSkinToneDescription, SkinToneAnalysis } from "../../lib/skin-tone-analysis"
+import { getStoredSkinTone, useSkinToneListener } from "../../lib/skin-tone-storage"
+import { 
+  productFilterManager, 
+  createDefaultActiveFilters,
+  type ProductFiltersMap,
+  type FilterOptions,
+  type ActiveFilters 
+} from "../../lib/product-filters"
 
 interface Product {
   id: string
@@ -44,13 +52,30 @@ export default function SwipePage() {
   // Skin tone analysis state
   const [skinToneAnalysis, setSkinToneAnalysis] = useState<SkinToneAnalysis | null>(null)
   const [skinToneMatching, setSkinToneMatching] = useState(false)
-  const [showSkinToneCapture, setShowSkinToneCapture] = useState(false)
-  const [cameraActive, setCameraActive] = useState(false)
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const streamRef = useRef<MediaStream | null>(null)
 
-  // Fetch ALL products from the API
+  // Filter system state (now loads instantly from static files)
+  const [filtersMap] = useState<ProductFiltersMap>(productFilterManager.getFiltersMap())
+  const [filterOptions] = useState<FilterOptions>(productFilterManager.getFilterOptions())
+  const [activeFilters, setActiveFilters] = useState<ActiveFilters>(
+    createDefaultActiveFilters(productFilterManager.getFilterOptions())
+  )
+
+  // Load stored skin tone analysis on component mount
+  useEffect(() => {
+    const stored = getStoredSkinTone()
+    if (stored) {
+      setSkinToneAnalysis(stored)
+    }
+
+    // Listen for skin tone updates from other pages
+    const cleanup = useSkinToneListener((analysis) => {
+      setSkinToneAnalysis(analysis)
+    })
+
+    return cleanup
+  }, [])
+
+  // Fetch ALL products from the API (filter system is ready immediately)
   useEffect(() => {
     const fetchAllProducts = async () => {
       try {
@@ -147,13 +172,7 @@ export default function SwipePage() {
         console.log(`Successfully loaded ${productsWithImages.length} products with images`)
         
         setAllProducts(productsWithImages)
-        setFilteredProducts(productsWithImages)
-        
-        // Set initial random product
-        if (productsWithImages.length > 0) {
-          const randomIndex = Math.floor(Math.random() * productsWithImages.length)
-          setCurrentProduct(productsWithImages[randomIndex])
-        }
+        applyFilters(productsWithImages) // Apply initial filters
         
         setLoadingProgress(100)
       } catch (error) {
@@ -165,28 +184,55 @@ export default function SwipePage() {
     }
 
     fetchAllProducts()
-  }, [])
+  }, []) // No dependency on filterSystemReady since it's always ready
 
-  // Filter products based on skin tone analysis
-  useEffect(() => {
-    if (skinToneMatching && skinToneAnalysis && allProducts.length > 0) {
-      const matchingProducts = allProducts.filter(product => {
-        // For simplicity, we'll use the color field to match against skin tone
-        // In a real app, you'd have actual hex color values for each product
+  // Apply filters using the filter system
+  const applyFilters = (productList: Product[] = allProducts) => {
+    let filtered = productList
+
+    // First apply regular filters using the filter manager
+    if (productList.length > 0) {
+      const productIds = productList.map(p => p.id)
+      const filteredIds = productFilterManager.filterProducts(productIds, activeFilters)
+      filtered = productList.filter(p => filteredIds.includes(p.id))
+    }
+
+    // Then apply skin tone matching if enabled
+    if (skinToneMatching && skinToneAnalysis) {
+      filtered = filtered.filter(product => {
         const productColorHex = getProductColorHex(product.color)
         return isColorMatch(productColorHex, skinToneAnalysis)
       })
-      setFilteredProducts(matchingProducts)
-      
-      // Update current product if it doesn't match
-      if (currentProduct && !matchingProducts.find(p => p.id === currentProduct.id)) {
-        const nextProduct = getRandomProduct(matchingProducts)
-        setCurrentProduct(nextProduct)
-      }
-    } else {
-      setFilteredProducts(allProducts)
     }
-  }, [skinToneMatching, skinToneAnalysis, allProducts, currentProduct])
+    
+    setFilteredProducts(filtered)
+    
+    // Set initial current product if none selected or current product is filtered out
+    if (!currentProduct || !filtered.find(p => p.id === currentProduct.id)) {
+      if (filtered.length > 0) {
+        const randomIndex = Math.floor(Math.random() * filtered.length)
+        setCurrentProduct(filtered[randomIndex])
+      } else {
+        setCurrentProduct(null)
+      }
+    }
+    
+    console.log(`Applied filters: ${productList.length} -> ${filtered.length} products`)
+  }
+
+  // Update active filters and reapply
+  const updateFilters = (newFilters: Partial<ActiveFilters>) => {
+    const updatedFilters = { ...activeFilters, ...newFilters }
+    setActiveFilters(updatedFilters)
+    applyFilters(allProducts)
+  }
+
+  // Reapply filters when skin tone matching changes
+  useEffect(() => {
+    if (allProducts.length > 0) {
+      applyFilters(allProducts)
+    }
+  }, [skinToneMatching, skinToneAnalysis])
 
   const getRandomProduct = (productList: Product[] = filteredProducts) => {
     if (productList.length === 0) return null
@@ -237,18 +283,23 @@ export default function SwipePage() {
     return 'Stylish'
   }
 
-  // Get unique values for filters
-  const getUniqueTypes = () => {
-    return [...new Set(allProducts.map(p => p.type))].sort()
-  }
-
-  const getUniqueColors = () => {
-    return [...new Set(allProducts.map(p => p.color))].sort()
+  // Toggle filter selection
+  const toggleFilter = (filterType: keyof ActiveFilters, value: string) => {
+    if (filterType === 'colors' || filterType === 'stores' || filterType === 'stockStatus' || 
+        filterType === 'materials' || filterType === 'occasions' || filterType === 'seasons') {
+      const currentValues = activeFilters[filterType] as string[]
+      const newValues = currentValues.includes(value)
+        ? currentValues.filter(v => v !== value)
+        : [...currentValues, value]
+      
+      updateFilters({ [filterType]: newValues })
+    }
   }
 
   // Convert color names to hex codes for skin tone analysis
   const getProductColorHex = (colorName: string): string => {
     const colorMap: { [key: string]: string } = {
+      // Basic colors
       'black': '#000000',
       'white': '#FFFFFF',
       'red': '#FF0000',
@@ -261,6 +312,8 @@ export default function SwipePage() {
       'brown': '#A52A2A',
       'gray': '#808080',
       'grey': '#808080',
+      
+      // Extended color variations
       'navy': '#000080',
       'beige': '#F5F5DC',
       'cream': '#FFFDD0',
@@ -277,64 +330,63 @@ export default function SwipePage() {
       'khaki': '#F0E68C',
       'mint': '#98FB98',
       'lavender': '#E6E6FA',
-      'ivory': '#FFFFF0'
+      'ivory': '#FFFFF0',
+      
+      // Additional clothing color variations
+      'crimson': '#DC143C',
+      'scarlet': '#FF2400',
+      'rose': '#FF66CC',
+      'fuchsia': '#FF00FF',
+      'magenta': '#FF00FF',
+      'violet': '#8A2BE2',
+      'indigo': '#4B0082',
+      'cyan': '#00FFFF',
+      'aqua': '#00FFFF',
+      'lime': '#00FF00',
+      'forest': '#228B22',
+      'emerald': '#50C878',
+      'jade': '#00A86B',
+      'chartreuse': '#7FFF00',
+      'amber': '#FFBF00',
+      'bronze': '#CD7F32',
+      'copper': '#B87333',
+      'rust': '#B7410E',
+      'mahogany': '#C04000',
+      'chestnut': '#954535',
+      'coffee': '#6F4E37',
+      'chocolate': '#D2691E',
+      'camel': '#C19A6B',
+      'sand': '#C2B280',
+      'wheat': '#F5DEB3',
+      'pearl': '#F0EAD6',
+      'champagne': '#F7E7CE',
+      'nude': '#E3BC9A',
+      'blush': '#DE5D83',
+      'mauve': '#E0B0FF',
+      'plum': '#DDA0DD',
+      'lilac': '#C8A2C8',
+      'periwinkle': '#CCCCFF',
+      'slate': '#708090',
+      'charcoal': '#36454F',
+      'steel': '#4682B4',
+      'cobalt': '#0047AB',
+      'sapphire': '#0F52BA',
+      'royal': '#4169E1',
+      'midnight': '#191970',
+      'denim': '#1560BD',
+      'powder': '#B0E0E6',
+      'sky': '#87CEEB',
+      'ice': '#F0F8FF',
+      'mint green': '#98FB98',
+      'sea green': '#2E8B57',
+      'pine': '#01796F',
+      'sage': '#9CAF88',
+      'moss': '#8A9A5B',
+      'hunter': '#355E3B'
     }
     
     const normalizedColor = colorName.toLowerCase().trim()
-    return colorMap[normalizedColor] || '#808080' // Default to gray if color not found
-  }
-
-  // Camera functions for skin tone analysis
-  const startCamera = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } }
-      })
-      
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream
-        streamRef.current = stream
-        setCameraActive(true)
-      }
-    } catch (error) {
-      console.error('Camera access error:', error)
-      alert('Unable to access camera. Please allow camera permission.')
-    }
-  }
-
-  const stopCamera = () => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop())
-      streamRef.current = null
-    }
-    setCameraActive(false)
-  }
-
-  const captureSkinTone = async () => {
-    if (!videoRef.current || !canvasRef.current) return
-
-    const canvas = canvasRef.current
-    const context = canvas.getContext('2d')
-    if (!context) return
-
-    canvas.width = videoRef.current.videoWidth
-    canvas.height = videoRef.current.videoHeight
-    context.drawImage(videoRef.current, 0, 0)
-
-    const imageData = canvas.toDataURL('image/jpeg', 0.8)
-    
-    try {
-      const analysis = await analyzeSkinTone(imageData)
-      setSkinToneAnalysis(analysis)
-      setShowSkinToneCapture(false)
-      stopCamera()
-      
-      // Auto-enable skin tone matching after analysis
-      setSkinToneMatching(true)
-    } catch (error) {
-      console.error('Skin tone analysis error:', error)
-      alert('Failed to analyze skin tone. Please try again.')
-    }
+    return colorMap[normalizedColor] || '#6B46C1' // Default to purple if color not found
   }
 
   if (loading) {
@@ -382,12 +434,104 @@ export default function SwipePage() {
     )
   }
 
+  if (!currentProduct && filteredProducts.length === 0 && skinToneMatching && skinToneAnalysis) {
+    // Show no matches message but keep full UI functional
+    return (
+      <div className="min-h-screen relative pb-20">
+        <AnimatedBackground />
+
+        <div className="relative z-10 p-4">
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-2xl font-bold gradient-text">Discover Your Style</h1>
+            <div className="text-right">
+              <p className="text-gray-400 text-sm">{allProducts.length} items loaded</p>
+              <p className="text-gray-500 text-xs">
+                0 available (skin matched)
+              </p>
+            </div>
+          </div>
+
+          {/* Skin Tone Analysis Section */}
+          <div className="mb-6">
+            <div className="glass-card rounded-2xl p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div 
+                    className="w-8 h-8 rounded-full border-2 border-white/30"
+                    style={{ backgroundColor: skinToneAnalysis.skinHex }}
+                  ></div>
+                  <div>
+                    <p className="text-white font-semibold text-sm">
+                      {getSkinToneDescription(skinToneAnalysis)}
+                    </p>
+                    <p className="text-gray-400 text-xs">Your color season</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setSkinToneMatching(false)}
+                    className="px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600"
+                  >
+                    Show All Items
+                  </button>
+                  <span className="text-xs text-gray-500">Take photo on home page</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* No matches message */}
+          <div className="glass-card rounded-3xl overflow-hidden mb-6 p-8">
+            <div className="text-center">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 flex items-center justify-center mx-auto mb-4">
+                <Palette className="text-purple-400" size={32} />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">No Perfect Matches Found</h3>
+              <p className="text-gray-300 mb-4">
+                We couldn't find clothes that match your <span className="text-purple-400">{getSkinToneDescription(skinToneAnalysis)}</span> skin tone right now.
+              </p>
+              <p className="text-gray-400 text-sm mb-6">
+                Don't worry! You can browse all {allProducts.length} items or take a new photo on the home page.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <button
+                  onClick={() => setSkinToneMatching(false)}
+                  className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-300"
+                >
+                  Browse All Items
+                </button>
+                <button
+                  onClick={() => window.location.href = '/'}
+                  className="px-6 py-3 bg-white/10 text-white rounded-xl font-semibold hover:bg-white/20 transition-all duration-300"
+                >
+                  Take Photo on Home
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   if (!currentProduct) {
     return (
       <div className="min-h-screen relative pb-20">
         <AnimatedBackground />
         <div className="relative z-10 flex items-center justify-center h-screen">
-          <p className="text-white text-lg">No products available</p>
+          <div className="text-center">
+            <p className="text-white text-lg mb-4">No products available with current filters</p>
+            <button
+              onClick={() => {
+                setActiveFilters(createDefaultActiveFilters(filterOptions))
+                setSkinToneMatching(false)
+                applyFilters()
+              }}
+              className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl"
+            >
+              Reset Filters
+            </button>
+          </div>
         </div>
       </div>
     )
@@ -408,6 +552,7 @@ export default function SwipePage() {
                 <span className="text-purple-400"> (skin matched)</span>
               )}
             </p>
+            <p className="text-gray-600 text-xs">Filters: {productFilterManager.getMetadata().generatedAt.split('T')[0]}</p>
           </div>
         </div>
 
@@ -439,25 +584,19 @@ export default function SwipePage() {
                   >
                     {skinToneMatching ? 'Matching On' : 'Match Colors'}
                   </button>
-                  <button
-                    onClick={() => setShowSkinToneCapture(true)}
-                    className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center"
-                    title="Retake skin tone analysis"
-                  >
-                    <Camera size={16} className="text-gray-400" />
-                  </button>
+                  <span className="text-xs text-gray-500">Take photo on home page</span>
                 </div>
               </div>
             </div>
           ) : (
             <button
-              onClick={() => setShowSkinToneCapture(true)}
+              onClick={() => window.location.href = '/'}
               className="w-full glass-card rounded-2xl p-4 hover:bg-white/10 transition-all duration-300"
             >
               <div className="flex items-center justify-center gap-3">
                 <Palette className="text-purple-400" size={24} />
                 <div className="text-center">
-                  <p className="text-white font-semibold">Analyze Your Skin Tone</p>
+                  <p className="text-white font-semibold">Take Photo on Home Page</p>
                   <p className="text-gray-400 text-sm">Get personalized color recommendations</p>
                 </div>
               </div>
@@ -497,7 +636,7 @@ export default function SwipePage() {
               <img 
                 src={currentProduct.image} 
                 alt={currentProduct.description} 
-                className="w-full h-96 object-cover"
+                className="w-full h-64 object-cover"
                 onError={(e) => {
                   // Fallback to placeholder if image fails to load
                   (e.target as HTMLImageElement).src = "/placeholder.svg?height=600&width=400"
@@ -603,29 +742,19 @@ export default function SwipePage() {
             </div>
 
             <div className="space-y-6">
-              {/* Product Types */}
-              <div>
-                <h3 className="font-semibold mb-3">Product Types ({getUniqueTypes().length})</h3>
-                <div className="flex flex-wrap gap-2">
-                  {getUniqueTypes().map((type) => (
-                    <button
-                      key={type}
-                      className="px-4 py-2 bg-white/10 rounded-full text-sm hover:bg-white/20 transition-all duration-300"
-                    >
-                      {type}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               {/* Colors */}
               <div>
-                <h3 className="font-semibold mb-3">Colors ({getUniqueColors().length})</h3>
+                <h3 className="font-semibold mb-3">Colors ({filterOptions.colors.length})</h3>
                 <div className="flex flex-wrap gap-2">
-                  {getUniqueColors().map((color) => (
+                  {filterOptions.colors.map((color) => (
                     <button
                       key={color}
-                      className="px-4 py-2 bg-white/10 rounded-full text-sm hover:bg-white/20 transition-all duration-300"
+                      onClick={() => toggleFilter('colors', color)}
+                      className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${
+                        activeFilters.colors.includes(color)
+                          ? 'bg-purple-500 text-white'
+                          : 'bg-white/10 hover:bg-white/20'
+                      }`}
                     >
                       {color}
                     </button>
@@ -637,10 +766,15 @@ export default function SwipePage() {
               <div>
                 <h3 className="font-semibold mb-3">Availability</h3>
                 <div className="flex flex-wrap gap-2">
-                  {["In Stock", "Low Stock", "All Items"].map((status) => (
+                  {filterOptions.stockStatus.map((status) => (
                     <button
                       key={status}
-                      className="px-4 py-2 bg-white/10 rounded-full text-sm hover:bg-white/20 transition-all duration-300"
+                      onClick={() => toggleFilter('stockStatus', status)}
+                      className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${
+                        activeFilters.stockStatus.includes(status)
+                          ? 'bg-purple-500 text-white'
+                          : 'bg-white/10 hover:bg-white/20'
+                      }`}
                     >
                       {status}
                     </button>
@@ -649,85 +783,26 @@ export default function SwipePage() {
               </div>
             </div>
 
-            <button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-4 rounded-2xl font-semibold mt-6 animate-pulse-glow">
-              Apply Filters
-            </button>
-          </div>
-                  </div>
-        )}
-
-        {/* Skin Tone Capture Modal */}
-        {showSkinToneCapture && (
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="w-full max-w-md glass-card rounded-3xl p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold gradient-text">Analyze Skin Tone</h2>
-                <button 
-                  onClick={() => {
-                    setShowSkinToneCapture(false)
-                    stopCamera()
-                  }}
-                  className="text-gray-400 hover:text-white"
-                >
-                  <X size={24} />
-                </button>
-              </div>
-
-              <div className="aspect-square rounded-2xl overflow-hidden bg-black mb-4">
-                {cameraActive ? (
-                  <video
-                    ref={videoRef}
-                    className="w-full h-full object-cover"
-                    autoPlay
-                    playsInline
-                    muted
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <div className="text-center">
-                      <Camera className="text-gray-400 mx-auto mb-2" size={48} />
-                      <p className="text-gray-300 mb-4">Position your face in the camera</p>
-                      <button
-                        onClick={startCamera}
-                        className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-semibold"
-                      >
-                        Start Camera
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {cameraActive && (
-                <div className="space-y-3">
-                  <p className="text-gray-300 text-sm text-center">
-                    Make sure your face is well-lit and clearly visible
-                  </p>
-                  <div className="flex gap-3">
-                    <button
-                      onClick={() => {
-                        setShowSkinToneCapture(false)
-                        stopCamera()
-                      }}
-                      className="flex-1 bg-white/10 text-white py-3 rounded-xl"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={captureSkinTone}
-                      className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-semibold"
-                    >
-                      Analyze
-                    </button>
-                  </div>
-                </div>
-              )}
+            <div className="flex gap-3 mt-6">
+              <button 
+                onClick={() => {
+                  setActiveFilters(createDefaultActiveFilters(filterOptions))
+                  applyFilters()
+                }}
+                className="flex-1 bg-white/10 text-white py-4 rounded-2xl font-semibold"
+              >
+                Reset Filters
+              </button>
+              <button 
+                onClick={() => setShowFilters(false)}
+                className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white py-4 rounded-2xl font-semibold animate-pulse-glow"
+              >
+                Apply Filters
+              </button>
             </div>
           </div>
-        )}
-
-        {/* Hidden canvas for image processing */}
-        <canvas ref={canvasRef} className="hidden" />
-      </div>
-    )
-  }
+        </div>
+      )}
+    </div>
+  )
+}

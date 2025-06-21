@@ -2,7 +2,8 @@
 import { useState, useRef, useEffect } from "react"
 import { Mic, MicOff, Volume2, VolumeX, Camera, RotateCcw } from "lucide-react"
 import AnimatedBackground from "./components/AnimatedBackground"
-import VoiceAgent from "./components/VoiceAgent"
+import VapiVoiceWidget from "../components/VapiVoiceWidget"
+import TranscriptBox from "../components/TranscriptBox"
 
 export default function HomePage() {
   const [micEnabled, setMicEnabled] = useState(false)
@@ -11,6 +12,11 @@ export default function HomePage() {
   const [cameraError, setCameraError] = useState<string | null>(null)
   const [isFrontCamera, setIsFrontCamera] = useState(true)
   const [micStream, setMicStream] = useState<MediaStream | null>(null)
+  
+  // Voice agent states
+  const [voiceTranscript, setVoiceTranscript] = useState<Array<{role: string, text: string}>>([])
+  const [isVoiceConnected, setIsVoiceConnected] = useState(false)
+  const [isVoiceSpeaking, setIsVoiceSpeaking] = useState(false)
   
   const videoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
@@ -22,6 +28,12 @@ export default function HomePage() {
       // Stop existing stream if any
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop())
+        streamRef.current = null
+      }
+
+      // Stop video element first to prevent AbortError
+      if (videoRef.current) {
+        videoRef.current.srcObject = null
       }
 
       const constraints = {
@@ -38,7 +50,13 @@ export default function HomePage() {
       
       if (videoRef.current) {
         videoRef.current.srcObject = stream
-        videoRef.current.play()
+        // Wait for video to be ready before playing
+        try {
+          await videoRef.current.play()
+        } catch (playError) {
+          console.warn('Video play error (non-critical):', playError)
+          // Don't throw error for play issues as they're often browser-specific
+        }
       }
       
       setCameraEnabled(true)
@@ -130,6 +148,9 @@ export default function HomePage() {
 
   return (
     <div className="relative h-screen overflow-hidden">
+      {/* Animated Background - Always present */}
+      <AnimatedBackground />
+      
       {/* Camera Feed - Full Screen */}
       <div className="absolute inset-0">
         {cameraEnabled ? (
@@ -141,7 +162,7 @@ export default function HomePage() {
             muted
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-gray-900 to-black flex items-center justify-center">
+          <div className="w-full h-full flex items-center justify-center">
             <div className="text-center">
               <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center animate-pulse-glow">
                 <Camera size={48} className="text-white" />
@@ -165,8 +186,20 @@ export default function HomePage() {
       {/* Subtle Overlay for Better UI Visibility */}
       <div className="absolute inset-0 bg-black/10" />
 
-      {/* Voice Agent */}
-      <VoiceAgent isMicEnabled={micEnabled} />
+      {/* Voice Transcript Box - Top Left */}
+      <TranscriptBox 
+        transcript={voiceTranscript}
+        isConnected={isVoiceConnected}
+        isSpeaking={isVoiceSpeaking}
+      />
+
+      {/* Vapi Voice Widget - No UI, just handles voice logic */}
+      <VapiVoiceWidget 
+        isEnabled={micEnabled}
+        onTranscriptUpdate={setVoiceTranscript}
+        onConnectionChange={setIsVoiceConnected}
+        onSpeakingChange={setIsVoiceSpeaking}
+      />
 
       {/* Camera Controls - Top Right */}
       <div className="absolute top-6 right-6 z-40">
