@@ -414,29 +414,23 @@ export default function SwipePage() {
 
           {/* Skin Tone Analysis Section */}
           <div className="mb-6">
-            <div className="glass-card rounded-2xl p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
+            <div className="glass-card rounded-full p-2">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
                   <div 
-                    className="w-8 h-8 rounded-full border-2 border-white/30"
+                    className="w-6 h-6 rounded-full border border-white/30"
                     style={{ backgroundColor: skinToneAnalysis.skinHex }}
                   ></div>
-                  <div>
-                    <p className="text-white font-semibold text-sm">
-                      {getSkinToneDescription(skinToneAnalysis)}
-                    </p>
-                    <p className="text-gray-400 text-xs">Your color season</p>
-                  </div>
+                  <p className="text-white font-semibold text-xs">
+                    {getSkinToneDescription(skinToneAnalysis)}
+                  </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setSkinToneMatching(false)}
-                    className="px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600"
-                  >
-                    Show All Items
-                  </button>
-                  <span className="text-xs text-gray-500">Take photo on home page</span>
-                </div>
+                <button
+                  onClick={() => setSkinToneMatching(false)}
+                  className="px-3 py-1 rounded-full text-xs font-semibold transition-all duration-300 bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600"
+                >
+                  Show All Items
+                </button>
               </div>
             </div>
           </div>
@@ -492,7 +486,7 @@ export default function SwipePage() {
 
       <div className="relative z-10 p-4">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold gradient-text">Discover Your Style</h1>
+          <h1 className="text-3xl font-bold gradient-text">Discover Your Style</h1>
           <div className="text-right">
             <p className="text-gray-400 text-sm">{allProducts.length} items loaded</p>
             <p className="text-gray-500 text-xs">
@@ -507,33 +501,27 @@ export default function SwipePage() {
         {/* Skin Tone Analysis Section */}
         <div className="mb-6">
           {skinToneAnalysis ? (
-            <div className="glass-card rounded-2xl p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
+            <div className="glass-card rounded-full p-2">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
                   <div 
-                    className="w-8 h-8 rounded-full border-2 border-white/30"
+                    className="w-6 h-6 rounded-full border border-white/30"
                     style={{ backgroundColor: skinToneAnalysis.skinHex }}
                   ></div>
-                  <div>
-                    <p className="text-white font-semibold text-sm">
-                      {getSkinToneDescription(skinToneAnalysis)}
-                    </p>
-                    <p className="text-gray-400 text-xs">Your color season</p>
-                  </div>
+                  <p className="text-white font-semibold text-xs">
+                    {getSkinToneDescription(skinToneAnalysis)}
+                  </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setSkinToneMatching(!skinToneMatching)}
-                    className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
-                      skinToneMatching
-                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
-                        : 'bg-white/10 text-gray-300 hover:bg-white/20'
-                    }`}
-                  >
-                    {skinToneMatching ? 'Matching On' : 'Match Colors'}
-                  </button>
-                  <span className="text-xs text-gray-500">Take photo on home page</span>
-                </div>
+                <button
+                  onClick={() => setSkinToneMatching(!skinToneMatching)}
+                  className={`px-3 py-1 rounded-full text-xs font-semibold transition-all duration-300 ${
+                    skinToneMatching
+                      ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                      : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                  }`}
+                >
+                  {skinToneMatching ? 'Matching' : 'Match'}
+                </button>
               </div>
             </div>
           ) : (
@@ -552,84 +540,57 @@ export default function SwipePage() {
           )}
         </div>
 
-        {/* Product Card with Side Navigation */}
-        <div className="relative">
-          {/* Left Swipe Button - Positioned outside left edge */}
-          <button
-            onClick={() => handleNavigation("left")}
-            className="absolute left-[-70px] top-1/2 transform -translate-y-1/2 w-14 h-14 rounded-full glass-card flex items-center justify-center hover:bg-white/20 transition-all duration-300 hover:scale-110 group z-10"
-            aria-label="Swipe left"
-          >
-            <ChevronLeft 
-              className="text-gray-400 group-hover:text-red-400 transition-colors duration-300" 
-              size={28} 
+        {/* Product Card - Now with fixed height and internal flex layout */}
+        <div className="glass-card rounded-3xl overflow-hidden mb-6 transform transition-all duration-300 hover:scale-105 h-[580px] flex flex-col">
+          <div className="relative flex-shrink-0">
+            <img 
+              src={currentProduct.image} 
+              alt={currentProduct.description} 
+              className="w-full h-96 object-cover"
+              onError={(e) => {
+                // Fallback to placeholder if image fails to load
+                (e.target as HTMLImageElement).src = "/placeholder.svg?height=600&width=400"
+              }}
             />
-          </button>
+            <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1">
+              <span className="text-white font-semibold">{currentProduct.price}</span>
+            </div>
+            <div className="absolute top-4 left-4 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1">
+              <span className="text-white text-sm">{currentProduct.stock_status}</span>
+            </div>
+          </div>
 
-          {/* Right Swipe Button - Positioned outside right edge */}
-          <button
-            onClick={() => handleNavigation("right")}
-            className="absolute right-[-70px] top-1/2 transform -translate-y-1/2 w-14 h-14 rounded-full glass-card flex items-center justify-center hover:bg-white/20 transition-all duration-300 hover:scale-110 group z-10"
-            aria-label="Swipe right"
-          >
-            <ChevronRight 
-              className="text-gray-400 group-hover:text-green-400 transition-colors duration-300" 
-              size={28} 
-            />
-          </button>
-
-          {/* Product Card - Back to original full width */}
-          <div className="glass-card rounded-3xl overflow-hidden mb-6 transform transition-all duration-300 hover:scale-105">
-            <div className="relative">
-              <img 
-                src={currentProduct.image} 
-                alt={currentProduct.description} 
-                className="w-full h-64 object-cover"
-                onError={(e) => {
-                  // Fallback to placeholder if image fails to load
-                  (e.target as HTMLImageElement).src = "/placeholder.svg?height=600&width=400"
-                }}
-              />
-              <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1">
-                <span className="text-white font-semibold">{currentProduct.price}</span>
-              </div>
-              <div className="absolute top-4 left-4 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1">
-                <span className="text-white text-sm">{currentProduct.stock_status}</span>
-              </div>
+          <div className="p-6 flex-1 flex flex-col">
+            <div className="flex flex-wrap gap-2 mb-4">
+              <span className="px-3 py-1 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full text-sm border border-purple-500/30">
+                {currentProduct.type}
+              </span>
+              <span className="px-3 py-1 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-full text-sm border border-blue-500/30">
+                {currentProduct.color}
+              </span>
+              {currentProduct.variant && (
+                <span className="px-3 py-1 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-full text-sm border border-green-500/30">
+                  Variant {currentProduct.variant}
+                </span>
+              )}
             </div>
 
-            <div className="p-6">
-              <div className="flex flex-wrap gap-2 mb-4">
-                <span className="px-3 py-1 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full text-sm border border-purple-500/30">
-                  {currentProduct.type}
-                </span>
-                <span className="px-3 py-1 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-full text-sm border border-blue-500/30">
-                  {currentProduct.color}
-                </span>
-                {currentProduct.variant && (
-                  <span className="px-3 py-1 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-full text-sm border border-green-500/30">
-                    Variant {currentProduct.variant}
-                  </span>
-                )}
-              </div>
+            <div className="space-y-2 mb-4 flex-1">
+              <p className="text-gray-300">{currentProduct.description}</p>
+              {currentProduct.graphic && (
+                <p className="text-gray-400 text-sm">Design: {currentProduct.graphic}</p>
+              )}
+            </div>
 
-              <div className="space-y-2 mb-4">
-                <p className="text-gray-300">{currentProduct.description}</p>
-                {currentProduct.graphic && (
-                  <p className="text-gray-400 text-sm">Design: {currentProduct.graphic}</p>
-                )}
-              </div>
-
-              <div className="flex gap-4 mt-4 text-sm text-gray-400">
-                <span>👗 {getOccasionFromType(currentProduct.type)}</span>
-                <span>✨ {getVibeFromDescription(currentProduct.description)}</span>
-                <span>📦 Stock: {currentProduct.stock}</span>
-              </div>
+            <div className="flex gap-4 mt-auto pt-4 text-sm text-gray-400">
+              <span>👗 {getOccasionFromType(currentProduct.type)}</span>
+              <span>✨ {getVibeFromDescription(currentProduct.description)}</span>
+              <span>📦 Stock: {currentProduct.stock}</span>
             </div>
           </div>
         </div>
 
-        {/* Action Buttons */}
+        {/* Action Buttons - Moved outside the card */}
         <div className="flex justify-center gap-4 mt-6">
           <button
             onClick={() => handleSwipe("left")}
