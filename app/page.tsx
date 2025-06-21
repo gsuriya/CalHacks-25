@@ -10,6 +10,8 @@ export default function HomePage() {
   const [cameraEnabled, setCameraEnabled] = useState(false)
   const [cameraError, setCameraError] = useState<string | null>(null)
   const [isFrontCamera, setIsFrontCamera] = useState(true)
+  const [micStream, setMicStream] = useState<MediaStream | null>(null)
+  
   const videoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
 
@@ -86,6 +88,33 @@ export default function HomePage() {
     }
   }
 
+  const toggleMicrophone = async () => {
+    if (micEnabled) {
+      // Stop microphone
+      if (micStream) {
+        micStream.getTracks().forEach(track => track.stop())
+        setMicStream(null)
+      }
+      setMicEnabled(false)
+    } else {
+      // Start microphone
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          }
+        })
+        setMicStream(stream)
+        setMicEnabled(true)
+      } catch (error) {
+        console.error('Microphone error:', error)
+        alert('Unable to access microphone. Please check permissions.')
+      }
+    }
+  }
+
   useEffect(() => {
     // Start camera when component mounts
     startCamera()
@@ -93,6 +122,9 @@ export default function HomePage() {
     // Cleanup on unmount
     return () => {
       stopCamera()
+      if (micStream) {
+        micStream.getTracks().forEach(track => track.stop())
+      }
     }
   }, [])
 
@@ -134,7 +166,7 @@ export default function HomePage() {
       <div className="absolute inset-0 bg-black/10" />
 
       {/* Voice Agent */}
-      <VoiceAgent />
+      <VoiceAgent isMicEnabled={micEnabled} />
 
       {/* Camera Controls - Top Right */}
       <div className="absolute top-6 right-6 z-40">
@@ -153,7 +185,7 @@ export default function HomePage() {
           <div className="flex justify-around items-center">
             {/* Mic Toggle */}
             <button
-              onClick={() => setMicEnabled(!micEnabled)}
+              onClick={toggleMicrophone}
               className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
                 micEnabled
                   ? "bg-gradient-to-r from-red-500 to-pink-500 animate-pulse-glow"
