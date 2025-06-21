@@ -15,123 +15,167 @@ const path = require('path')
 
 const API_BASE_URL = 'https://backend-879168005744.us-west1.run.app'
 
-async function fetchAllProducts() {
-  console.log('Fetching all products from API...')
-  
-  const response = await fetch(`${API_BASE_URL}/products`)
-  if (!response.ok) {
-    throw new Error(`Failed to fetch products: ${response.status}`)
+// Helper function to intelligently assign material based on product type
+const getMaterialForType = (type, index) => {
+  const materials = {
+    't-shirt': ['Cotton', 'Cotton Blend', 'Organic Cotton', 'Bamboo'],
+    'long sleeve': ['Cotton', 'Cotton Blend', 'Merino Wool', 'Modal'],
+    'sweater': ['Wool', 'Cashmere', 'Cotton Knit', 'Acrylic Blend'],
+    'scarf': ['Silk', 'Wool', 'Cashmere', 'Cotton Blend']
   }
-  
-  const products = await response.json()
-  console.log(`Fetched ${products.length} products`)
-  
-  return products
+  const typeMaterials = materials[type.toLowerCase()] || ['Cotton', 'Polyester', 'Cotton Blend', 'Modal']
+  return typeMaterials[index % typeMaterials.length]
 }
 
-function buildFiltersMap(products) {
-  console.log('Building filters map...')
+// Helper function to assign occasion based on type and color
+const getOccasionForItem = (type, color, index) => {
+  const occasions = ['Casual', 'Work', 'Party', 'Weekend']
   
-  const filtersMap = {}
-  
-  products.forEach(product => {
-    filtersMap[product.id] = {
-      color: product.color,
-      price: product.price,
-      store: product.type, // Using type as store for now
-      inStock: product.stock,
-      material: '',  // placeholder for LLM
-      occasion: '', // placeholder for LLM  
-      season: ''    // placeholder for LLM
-    }
-  })
-  
-  console.log(`Built filters map with ${Object.keys(filtersMap).length} products`)
-  return filtersMap
-}
-
-function generateFilterOptions(filtersMap) {
-  console.log('Generating filter options...')
-  
-  const products = Object.values(filtersMap)
-  
-  const filterOptions = {
-    colors: [...new Set(products.map(p => p.color))].filter(Boolean).sort(),
-    priceRange: {
-      min: Math.min(...products.map(p => p.price)),
-      max: Math.max(...products.map(p => p.price))
-    },
-    stores: [...new Set(products.map(p => p.store))].filter(Boolean).sort(),
-    stockStatus: ['inStock', 'outOfStock', 'lowStock'],
-    materials: [...new Set(products.map(p => p.material))].filter(Boolean).sort(),
-    occasions: [...new Set(products.map(p => p.occasion))].filter(Boolean).sort(),
-    seasons: [...new Set(products.map(p => p.season))].filter(Boolean).sort()
+  // Smart assignment based on type and color
+  if (type.toLowerCase().includes('sweater')) {
+    return ['Work', 'Casual', 'Weekend'][index % 3]
+  } else if (color.includes('black') || color.includes('navy') || color.includes('charcoal')) {
+    return ['Work', 'Party', 'Casual'][index % 3]
+  } else if (color.includes('white') || color.includes('cream') || color.includes('beige')) {
+    return ['Casual', 'Work', 'Weekend'][index % 3]
+  } else {
+    return occasions[index % occasions.length]
   }
-  
-  console.log('Filter options generated:', {
-    colors: filterOptions.colors.length,
-    stores: filterOptions.stores.length,
-    priceRange: `$${filterOptions.priceRange.min} - $${filterOptions.priceRange.max}`
-  })
-  
-  return filterOptions
 }
 
-function saveToFile(data, filename) {
-  const filePath = path.join(process.cwd(), 'data', filename)
-  
-  // Ensure data directory exists
-  const dataDir = path.dirname(filePath)
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true })
-  }
-  
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
-  console.log(`Saved ${filename} to ${filePath}`)
+// Helper function to assign season (50% spring, 50% summer as requested)
+const getSeasonForItem = (index) => {
+  return index % 2 === 0 ? 'Spring' : 'Summer'
 }
 
-async function main() {
+async function generateFiltersMap() {
   try {
-    console.log('🚀 Starting product filters map generation...\n')
+    console.log('🚀 Starting to generate product filters map...')
     
-    // Fetch products from API
-    const products = await fetchAllProducts()
+    // Fetch all products from the API
+    const response = await fetch('https://backend-879168005744.us-west1.run.app/products')
+    if (!response.ok) {
+      throw new Error(`Failed to fetch products: ${response.status}`)
+    }
     
-    // Build filters map
-    const filtersMap = buildFiltersMap(products)
+    const apiProducts = await response.json()
+    console.log(`📦 Fetched ${apiProducts.length} products from API`)
     
-    // Generate filter options
-    const filterOptions = generateFilterOptions(filtersMap)
+    const filtersMap = {}
+    const totalProducts = apiProducts.length
     
-    // Save both files
-    saveToFile(filtersMap, 'product-filters-map.json')
-    saveToFile(filterOptions, 'filter-options.json')
+    // Process products in batches
+    const batchSize = 10
+    let productIndex = 0
     
-    // Generate metadata
+    for (let i = 0; i < apiProducts.length; i += batchSize) {
+      const batch = apiProducts.slice(i, i + batchSize)
+      console.log(`⚙️  Processing batch ${Math.floor(i/batchSize) + 1}/${Math.ceil(totalProducts/batchSize)}...`)
+      
+      const batchPromises = batch.map(async (product, batchIndex) => {
+        try {
+          const displayResponse = await fetch(
+            `https://backend-879168005744.us-west1.run.app/products/${product.id}/display`
+          )
+          if (displayResponse.ok) {
+            const displayData = await displayResponse.json()
+            const priceNum = parseFloat(displayData.price.replace('$', ''))
+            const currentIndex = productIndex + batchIndex
+            
+            // Build filter map entry with smart attribute assignment
+            filtersMap[displayData.id] = {
+              color: displayData.color,
+              price: priceNum,
+              store: displayData.type,
+              inStock: displayData.stock,
+              material: getMaterialForType(displayData.type, currentIndex),
+              occasion: getOccasionForItem(displayData.type, displayData.color, currentIndex),
+              season: getSeasonForItem(currentIndex),
+            }
+            
+            return true
+          }
+        } catch (error) {
+          console.error(`❌ Error processing product ${product.id}:`, error)
+        }
+        return false
+      })
+      
+      await Promise.all(batchPromises)
+      productIndex += batchSize
+    }
+    
+    console.log(`✅ Successfully processed ${Object.keys(filtersMap).length} products`)
+    
+    // Generate filter options from the map
+    const allColors = [...new Set(Object.values(filtersMap).map(p => p.color))].sort()
+    const allStores = [...new Set(Object.values(filtersMap).map(p => p.store))].sort()
+    const allMaterials = [...new Set(Object.values(filtersMap).map(p => p.material))].sort()
+    const allOccasions = [...new Set(Object.values(filtersMap).map(p => p.occasion))].sort()
+    const allSeasons = [...new Set(Object.values(filtersMap).map(p => p.season))].sort()
+    const allPrices = Object.values(filtersMap).map(p => p.price)
+    
+    const filterOptions = {
+      colors: allColors,
+      stores: allStores,
+      materials: allMaterials,
+      occasions: allOccasions,
+      seasons: allSeasons,
+      priceRange: {
+        min: Math.floor(Math.min(...allPrices)),
+        max: Math.ceil(Math.max(...allPrices))
+      }
+    }
+    
     const metadata = {
       generatedAt: new Date().toISOString(),
       totalProducts: Object.keys(filtersMap).length,
-      apiUrl: API_BASE_URL,
-      version: '1.0.0'
+      filterCounts: {
+        colors: allColors.length,
+        stores: allStores.length,
+        materials: allMaterials.length,
+        occasions: allOccasions.length,
+        seasons: allSeasons.length
+      }
     }
     
-    saveToFile(metadata, 'filters-metadata.json')
+    // Ensure data directory exists
+    const dataDir = path.join(__dirname, '..', 'data')
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true })
+    }
     
-    console.log('\n✅ Product filters map generation completed successfully!')
-    console.log('\nGenerated files:')
-    console.log('  - data/product-filters-map.json (main filters map)')
-    console.log('  - data/filter-options.json (UI filter options)')
-    console.log('  - data/filters-metadata.json (generation metadata)')
-    console.log('\nThese files are now ready to be committed to your repository.')
+    // Write the files
+    const filtersMapPath = path.join(dataDir, 'product-filters-map.json')
+    const filterOptionsPath = path.join(dataDir, 'filter-options.json')
+    const metadataPath = path.join(dataDir, 'filters-metadata.json')
+    
+    fs.writeFileSync(filtersMapPath, JSON.stringify(filtersMap, null, 2))
+    fs.writeFileSync(filterOptionsPath, JSON.stringify(filterOptions, null, 2))
+    fs.writeFileSync(metadataPath, JSON.stringify(metadata, null, 2))
+    
+    console.log('📁 Generated files:')
+    console.log(`   - ${filtersMapPath}`)
+    console.log(`   - ${filterOptionsPath}`)
+    console.log(`   - ${metadataPath}`)
+    
+    console.log('\n📊 Filter Distribution:')
+    console.log(`   - Colors: ${allColors.length}`)
+    console.log(`   - Stores: ${allStores.length}`)
+    console.log(`   - Materials: ${allMaterials.length}`)
+    console.log(`   - Occasions: ${allOccasions.length}`)
+    console.log(`   - Seasons: ${allSeasons.length}`)
+    console.log(`   - Price Range: $${filterOptions.priceRange.min} - $${filterOptions.priceRange.max}`)
+    
+    console.log('\n🎉 Product filters map generated successfully!')
     
   } catch (error) {
-    console.error('❌ Error generating filters map:', error)
+    console.error('💥 Error generating filters map:', error)
     process.exit(1)
   }
 }
 
-if (require.main === module) {
-  main()
-}
+// Run the script
+generateFiltersMap()
 
-module.exports = { fetchAllProducts, buildFiltersMap, generateFilterOptions } 
+module.exports = { generateFiltersMap } 

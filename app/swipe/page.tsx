@@ -32,6 +32,39 @@ interface ApiProduct {
   created_at: string
 }
 
+// Data structure for the filter map
+interface ProductFilterAttributes {
+  color: string
+  price: number
+  store: string
+  inStock: number
+  material: string
+  occasion: string
+  season: string
+}
+
+// Data structure for the filter options UI
+interface FilterOptions {
+  colors: string[]
+  stores: string[]
+  materials: string[]
+  occasions: string[]
+  seasons: string[]
+  priceRange: { min: number; max: number }
+}
+
+// Data structure for the active filter state
+interface ActiveFilters {
+  colors: string[]
+  stores: string[]
+  materials: string[]
+  occasions: string[]
+  seasons: string[]
+  priceMin: number
+  priceMax: number
+  inStock: boolean
+}
+
 export default function SwipePage() {
   const [allProducts, setAllProducts] = useState<Product[]>([])
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
@@ -46,32 +79,71 @@ export default function SwipePage() {
   const [skinToneAnalysis, setSkinToneAnalysis] = useState<SkinToneAnalysis | null>(null)
   const [skinToneMatching, setSkinToneMatching] = useState(false)
 
+  // Filter system state - now loads from static files
+  const [productFiltersMap, setProductFiltersMap] = useState<Record<string, ProductFilterAttributes>>({})
+  const [filterOptions, setFilterOptions] = useState<FilterOptions | null>(null)
+  const [activeFilters, setActiveFilters] = useState<ActiveFilters | null>(null)
+  const [filterSystemReady, setFilterSystemReady] = useState(false)
+
   // Load stored skin tone analysis on component mount
   useEffect(() => {
     const stored = getStoredSkinTone()
     if (stored) {
       setSkinToneAnalysis(stored)
     }
-
-    // Listen for skin tone updates from other pages
-    const cleanup = useSkinToneListener((analysis) => {
-      setSkinToneAnalysis(analysis)
-    })
-
-    return cleanup
   }, [])
 
-  // Fetch ALL products from the API
+  // Listener for skin tone updates from other pages
+  useSkinToneListener(analysis => {
+    console.log("Skin tone updated via listener:", analysis)
+    setSkinToneAnalysis(analysis)
+  })
+
+  // Load static filter data and fetch products
   useEffect(() => {
-    const fetchAllProducts = async () => {
+    const loadFilterDataAndProducts = async () => {
       try {
         setLoading(true)
         setError(null)
         setLoadingProgress(0)
         
-        console.log('Starting to fetch all products...')
+        console.log('Loading static filter data...')
         
-        // Fetch all products from the API
+        // Load static filter data
+        const [filtersMapResponse, filterOptionsResponse] = await Promise.all([
+          fetch('/product-filters-map.json'),
+          fetch('/filter-options.json')
+        ])
+        
+        if (!filtersMapResponse.ok || !filterOptionsResponse.ok) {
+          throw new Error('Failed to load filter data files')
+        }
+        
+        const filtersMapData = await filtersMapResponse.json()
+        const filterOptionsData = await filterOptionsResponse.json()
+        
+        setProductFiltersMap(filtersMapData)
+        setFilterOptions(filterOptionsData)
+        
+        // Set initial active filters
+        setActiveFilters({
+          colors: [],
+          stores: [],
+          materials: [],
+          occasions: [],
+          seasons: [],
+          priceMin: filterOptionsData.priceRange.min,
+          priceMax: filterOptionsData.priceRange.max,
+          inStock: true,
+        })
+        
+        setFilterSystemReady(true)
+        setLoadingProgress(20)
+        
+        console.log('Static filter data loaded successfully')
+        console.log('Starting to fetch products...')
+        
+        // Now fetch products from API
         const response = await fetch('https://backend-879168005744.us-west1.run.app/products')
         if (!response.ok) {
           throw new Error(`Failed to fetch products: ${response.status}`)
@@ -79,14 +151,11 @@ export default function SwipePage() {
         
         const apiProducts: ApiProduct[] = await response.json()
         console.log(`Fetched ${apiProducts.length} products from API`)
-        
-        setLoadingProgress(10) // 10% - Got product list
-        
-        // Fetch display data for ALL products to get base64 images
+        setLoadingProgress(30)
+
         const totalProducts = apiProducts.length
         const productsWithImages: Product[] = []
         
-        // Process products in batches to avoid overwhelming the API
         const batchSize = 10
         for (let i = 0; i < apiProducts.length; i += batchSize) {
           const batch = apiProducts.slice(i, i + batchSize)
@@ -98,106 +167,101 @@ export default function SwipePage() {
               )
               if (displayResponse.ok) {
                 const displayData = await displayResponse.json()
-                console.log(`Loaded product ${i + batchIndex + 1}/${totalProducts}: ${displayData.type}`)
+                
                 return {
                   id: displayData.id,
-                  image: displayData.image, // This is the base64 encoded image
+                  image: displayData.image,
                   description: displayData.description,
                   type: displayData.type,
                   color: displayData.color,
                   graphic: displayData.graphic,
                   variant: displayData.variant,
                   stock: displayData.stock,
-                  price: displayData.price, // Already formatted as string like "$26.62"
+                  price: displayData.price,
                   created_at: displayData.created_at,
-                  stock_status: displayData.stock_status
-                }
-              } else {
-                // Fallback to original product data with placeholder image
-                console.warn(`Failed to load display data for product ${product.id}, using fallback`)
-                return {
-                  id: product.id,
-                  image: "/placeholder.svg?height=600&width=400",
-                  description: product.description,
-                  type: product.type,
-                  color: product.color,
-                  graphic: product.graphic,
-                  variant: product.variant,
-                  stock: product.stock,
-                  price: `$${product.price.toFixed(2)}`,
-                  created_at: product.created_at,
-                  stock_status: product.stock > 0 ? "In Stock" : "Out of Stock"
+                  stock_status: displayData.stock_status,
                 }
               }
             } catch (error) {
-              console.error(`Error fetching display data for product ${product.id}:`, error)
-              return {
-                id: product.id,
-                image: "/placeholder.svg?height=600&width=400",
-                description: product.description,
-                type: product.type,
-                color: product.color,
-                graphic: product.graphic,
-                variant: product.variant,
-                stock: product.stock,
-                price: `$${product.price.toFixed(2)}`,
-                created_at: product.created_at,
-                stock_status: product.stock > 0 ? "In Stock" : "Out of Stock"
-              }
+               console.error(`Error processing product ${product.id}:`, error)
             }
+            return null
           })
           
-          const batchResults = await Promise.all(batchPromises)
+          const batchResults = (await Promise.all(batchPromises)).filter(p => p !== null) as Product[]
           productsWithImages.push(...batchResults)
           
-          // Update progress
-          const progress = 10 + ((i + batchSize) / totalProducts) * 90
+          const progress = 30 + ((i + batchSize) / totalProducts) * 70
           setLoadingProgress(Math.min(progress, 100))
         }
         
         console.log(`Successfully loaded ${productsWithImages.length} products with images`)
-        
         setAllProducts(productsWithImages)
-        setFilteredProducts(productsWithImages)
-        
-        // Set initial random product
-        if (productsWithImages.length > 0) {
-          const randomIndex = Math.floor(Math.random() * productsWithImages.length)
-          setCurrentProduct(productsWithImages[randomIndex])
-        }
-        
         setLoadingProgress(100)
+
       } catch (error) {
-        console.error('Error fetching products:', error)
+        console.error('Error loading data:', error)
         setError('Failed to load products. Please try again.')
       } finally {
         setLoading(false)
       }
     }
 
-    fetchAllProducts()
+    loadFilterDataAndProducts()
   }, [])
 
-  // Filter products based on skin tone analysis
+  // Effect to apply filters when they change
   useEffect(() => {
-    if (skinToneMatching && skinToneAnalysis && allProducts.length > 0) {
-      const matchingProducts = allProducts.filter(product => {
-        // For simplicity, we'll use the color field to match against skin tone
-        // In a real app, you'd have actual hex color values for each product
+    if (!filterSystemReady || allProducts.length === 0) return
+
+    let productsToFilter = [...allProducts]
+
+    // Apply skin tone matching first if enabled
+    if (skinToneMatching && skinToneAnalysis) {
+      productsToFilter = productsToFilter.filter(product => {
         const productColorHex = getProductColorHex(product.color)
         return isColorMatch(productColorHex, skinToneAnalysis)
       })
-      setFilteredProducts(matchingProducts)
-      
-      // Update current product if it doesn't match
-      if (currentProduct && !matchingProducts.find(p => p.id === currentProduct.id)) {
-        const nextProduct = getRandomProduct(matchingProducts)
-        setCurrentProduct(nextProduct)
-      }
-    } else {
-      setFilteredProducts(allProducts)
     }
-  }, [skinToneMatching, skinToneAnalysis, allProducts, currentProduct])
+
+    // Apply active filters using the static filter map
+    if (activeFilters) {
+      const filtered = productsToFilter.filter(product => {
+        const attributes = productFiltersMap[product.id]
+        if (!attributes) return false
+        
+        const { colors, stores, materials, occasions, seasons, priceMin, priceMax, inStock } = activeFilters
+        
+        if (colors.length > 0 && !colors.includes(attributes.color)) return false
+        if (stores.length > 0 && !stores.includes(attributes.store)) return false
+        if (materials.length > 0 && !materials.includes(attributes.material)) return false
+        if (occasions.length > 0 && !occasions.includes(attributes.occasion)) return false
+        if (seasons.length > 0 && !seasons.includes(attributes.season)) return false
+        if (attributes.price < priceMin || attributes.price > priceMax) return false
+        if (inStock && attributes.inStock === 0) return false
+        
+        return true
+      })
+      setFilteredProducts(filtered)
+    } else {
+      setFilteredProducts(productsToFilter)
+    }
+
+  }, [activeFilters, skinToneMatching, skinToneAnalysis, allProducts, filterSystemReady, productFiltersMap])
+
+  // Effect to set the initial/next product when filtered list changes
+  useEffect(() => {
+    if (filteredProducts.length > 0) {
+        const isCurrentProductInFilteredList = filteredProducts.some(p => p.id === currentProduct?.id)
+        if (!currentProduct || !isCurrentProductInFilteredList) {
+            const randomIndex = Math.floor(Math.random() * filteredProducts.length)
+            setCurrentProduct(filteredProducts[randomIndex])
+        }
+    } else {
+        setCurrentProduct(null)
+    }
+  }, [filteredProducts, currentProduct])
+
 
   const getRandomProduct = (productList: Product[] = filteredProducts) => {
     if (productList.length === 0) return null
@@ -209,21 +273,31 @@ export default function SwipePage() {
     if (!currentProduct) return
 
     if (direction === "right") {
-      // Like the product
       setLikedProducts(prev => new Set([...prev, currentProduct.id]))
     }
-
-    // Get a new random product from filtered list
-    const nextProduct = getRandomProduct()
-    setCurrentProduct(nextProduct)
+    setCurrentProduct(getRandomProduct())
+  }
+  
+  const handleNavigation = (direction: "left" | "right") => {
+    setCurrentProduct(getRandomProduct())
   }
 
-  const handleNavigation = (direction: "left" | "right") => {
-    if (!currentProduct) return
+  const handleFilterChange = (filterType: keyof ActiveFilters, value: any) => {
+    if (!activeFilters) return
+    
+    let newFilters = { ...activeFilters }
 
-    // Just navigate to next product without liking
-    const nextProduct = getRandomProduct()
-    setCurrentProduct(nextProduct)
+    if (filterType === 'colors' || filterType === 'stores' || filterType === 'materials' || filterType === 'occasions' || filterType === 'seasons') {
+      const currentValues = newFilters[filterType] as string[]
+      const newValues = currentValues.includes(value)
+        ? currentValues.filter(v => v !== value)
+        : [...currentValues, value]
+      newFilters = { ...newFilters, [filterType]: newValues }
+    } else {
+      newFilters = { ...newFilters, [filterType]: value }
+    }
+    
+    setActiveFilters(newFilters)
   }
 
   const getOccasionFromType = (type: string): string => {
@@ -246,15 +320,6 @@ export default function SwipePage() {
     if (desc.includes('minimalist') || desc.includes('simple')) return 'Minimalist'
     if (desc.includes('trendy') || desc.includes('stylish')) return 'Trendy'
     return 'Stylish'
-  }
-
-  // Get unique values for filters
-  const getUniqueTypes = () => {
-    return [...new Set(allProducts.map(p => p.type))].sort()
-  }
-
-  const getUniqueColors = () => {
-    return [...new Set(allProducts.map(p => p.color))].sort()
   }
 
   // Convert color names to hex codes for skin tone analysis
@@ -366,7 +431,8 @@ export default function SwipePage() {
             </div>
             <p className="text-gray-400 text-sm">{Math.round(loadingProgress)}% complete</p>
             <p className="text-gray-500 text-xs mt-2">
-              {loadingProgress < 10 ? 'Fetching product list...' :
+              {loadingProgress < 20 ? 'Loading filter system...' :
+               loadingProgress < 30 ? 'Fetching product list...' :
                loadingProgress < 100 ? `Loading product images...` :
                'Almost ready!'}
             </p>
@@ -403,7 +469,7 @@ export default function SwipePage() {
 
         <div className="relative z-10 p-4">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-bold gradient-text">Discover Your Style</h1>
+            <h1 className="text-3xl font-bold gradient-text">Discover Your Style</h1>
             <div className="text-right">
               <p className="text-gray-400 text-sm">{allProducts.length} items loaded</p>
               <p className="text-gray-500 text-xs">
@@ -459,7 +525,7 @@ export default function SwipePage() {
                   onClick={() => window.location.href = '/'}
                   className="px-6 py-3 bg-white/10 text-white rounded-xl font-semibold hover:bg-white/20 transition-all duration-300"
                 >
-                  Take Photo on Home
+                  Take Photo
                 </button>
               </div>
             </div>
@@ -474,7 +540,28 @@ export default function SwipePage() {
       <div className="min-h-screen relative pb-20">
         <AnimatedBackground />
         <div className="relative z-10 flex items-center justify-center h-screen">
-          <p className="text-white text-lg">No products available</p>
+          <div className="text-center">
+            <p className="text-white text-lg mb-4">No products match your filters</p>
+            <button 
+              onClick={() => {
+                if (filterOptions) {
+                  setActiveFilters({
+                    colors: [],
+                    stores: [],
+                    materials: [],
+                    occasions: [],
+                    seasons: [],
+                    priceMin: filterOptions.priceRange.min,
+                    priceMax: filterOptions.priceRange.max,
+                    inStock: true,
+                  })
+                }
+              }}
+              className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-semibold"
+            >
+              Reset Filters
+            </button>
+          </div>
         </div>
       </div>
     )
@@ -640,9 +727,9 @@ export default function SwipePage() {
       </div>
 
       {/* Filter Drawer */}
-      {showFilters && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end">
-          <div className="w-full glass-card rounded-t-3xl p-6 animate-slide-up">
+      {showFilters && filterOptions && activeFilters && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end justify-center">
+          <div className="w-full max-w-md glass-card rounded-t-3xl p-4 animate-slide-up max-h-[85vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold gradient-text">Filters</h2>
               <button onClick={() => setShowFilters(false)} className="text-gray-400 hover:text-white">
@@ -651,54 +738,144 @@ export default function SwipePage() {
             </div>
 
             <div className="space-y-6">
-              {/* Product Types */}
-              <div>
-                <h3 className="font-semibold mb-3">Product Types ({getUniqueTypes().length})</h3>
-                <div className="flex flex-wrap gap-2">
-                  {getUniqueTypes().map((type) => (
-                    <button
-                      key={type}
-                      className="px-4 py-2 bg-white/10 rounded-full text-sm hover:bg-white/20 transition-all duration-300"
-                    >
-                      {type}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               {/* Colors */}
               <div>
-                <h3 className="font-semibold mb-3">Colors ({getUniqueColors().length})</h3>
+                <h3 className="font-semibold mb-3">Color ({filterOptions.colors.length})</h3>
                 <div className="flex flex-wrap gap-2">
-                  {getUniqueColors().map((color) => (
+                  {filterOptions.colors.map((color) => (
                     <button
                       key={color}
-                      className="px-4 py-2 bg-white/10 rounded-full text-sm hover:bg-white/20 transition-all duration-300"
+                      onClick={() => handleFilterChange('colors', color)}
+                      className={`px-3 py-1.5 rounded-full text-sm transition-all duration-300 ${
+                        activeFilters.colors.includes(color)
+                          ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                          : 'bg-white/10 hover:bg-white/20'
+                      }`}
                     >
                       {color}
                     </button>
                   ))}
                 </div>
               </div>
+              
+              {/* Store (Product Type) */}
+              <div>
+                <h3 className="font-semibold mb-3">Store ({filterOptions.stores.length})</h3>
+                <div className="flex flex-wrap gap-2">
+                  {filterOptions.stores.map((store) => (
+                    <button
+                      key={store}
+                      onClick={() => handleFilterChange('stores', store)}
+                      className={`px-3 py-1.5 rounded-full text-sm transition-all duration-300 ${
+                        activeFilters.stores.includes(store)
+                          ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white'
+                          : 'bg-white/10 hover:bg-white/20'
+                      }`}
+                    >
+                      {store}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-              {/* Stock Status */}
+              {/* Price Range */}
+              <div>
+                <h3 className="font-semibold mb-3">Price Range</h3>
+                <div className="flex justify-between items-center text-sm text-gray-300 mb-2">
+                    <span>${activeFilters.priceMin}</span>
+                    <span>${activeFilters.priceMax}</span>
+                </div>
+                <input
+                  type="range"
+                  min={filterOptions.priceRange.min}
+                  max={filterOptions.priceRange.max}
+                  value={activeFilters.priceMax}
+                  onChange={(e) => handleFilterChange('priceMax', Number(e.target.value))}
+                  className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                />
+              </div>
+
+              {/* In Stock */}
               <div>
                 <h3 className="font-semibold mb-3">Availability</h3>
+                <div className="flex items-center justify-between glass-card p-3 rounded-xl">
+                    <label htmlFor="inStock" className="text-white">Show in-stock only</label>
+                    <input 
+                        id="inStock"
+                        type="checkbox"
+                        checked={activeFilters.inStock}
+                        onChange={(e) => handleFilterChange('inStock', e.target.checked)}
+                        className="w-5 h-5 text-purple-600 bg-gray-700 border-gray-600 rounded focus:ring-purple-600 ring-offset-gray-800 focus:ring-2"
+                    />
+                </div>
+              </div>
+              
+              {/* Material */}
+              <div>
+                <h3 className="font-semibold mb-3">Material ({filterOptions.materials.length})</h3>
                 <div className="flex flex-wrap gap-2">
-                  {["In Stock", "Low Stock", "All Items"].map((status) => (
+                  {filterOptions.materials.map((material) => (
                     <button
-                      key={status}
-                      className="px-4 py-2 bg-white/10 rounded-full text-sm hover:bg-white/20 transition-all duration-300"
+                      key={material}
+                      onClick={() => handleFilterChange('materials', material)}
+                      className={`px-3 py-1.5 rounded-full text-sm transition-all duration-300 ${
+                        activeFilters.materials.includes(material)
+                          ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white'
+                          : 'bg-white/10 hover:bg-white/20'
+                      }`}
                     >
-                      {status}
+                      {material}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Occasion */}
+              <div>
+                <h3 className="font-semibold mb-3">Occasion ({filterOptions.occasions.length})</h3>
+                <div className="flex flex-wrap gap-2">
+                  {filterOptions.occasions.map((occasion) => (
+                    <button
+                      key={occasion}
+                      onClick={() => handleFilterChange('occasions', occasion)}
+                      className={`px-3 py-1.5 rounded-full text-sm transition-all duration-300 ${
+                        activeFilters.occasions.includes(occasion)
+                          ? 'bg-gradient-to-r from-green-500 to-teal-500 text-white'
+                          : 'bg-white/10 hover:bg-white/20'
+                      }`}
+                    >
+                      {occasion}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Season */}
+              <div>
+                <h3 className="font-semibold mb-3">Season ({filterOptions.seasons.length})</h3>
+                <div className="flex flex-wrap gap-2">
+                  {filterOptions.seasons.map((season) => (
+                    <button
+                      key={season}
+                      onClick={() => handleFilterChange('seasons', season)}
+                      className={`px-3 py-1.5 rounded-full text-sm transition-all duration-300 ${
+                        activeFilters.seasons.includes(season)
+                          ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
+                          : 'bg-white/10 hover:bg-white/20'
+                      }`}
+                    >
+                      {season}
                     </button>
                   ))}
                 </div>
               </div>
             </div>
 
-            <button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-4 rounded-2xl font-semibold mt-6 animate-pulse-glow">
-              Apply Filters
+            <button 
+              onClick={() => setShowFilters(false)}
+              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-4 rounded-2xl font-semibold mt-8 animate-pulse-glow"
+            >
+              Show {filteredProducts.length} Items
             </button>
           </div>
         </div>
