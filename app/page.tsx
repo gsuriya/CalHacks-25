@@ -218,12 +218,12 @@ export default function HomePage() {
       {analysisMessage && (
         <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-40">
           <div className="glass-card rounded-2xl px-6 py-3 animate-slide-up">
-            <p className="text-white font-medium text-center flex items-center gap-2">
+            <div className="text-white font-medium text-center flex items-center gap-2">
               {isAnalyzing && (
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
               )}
               {analysisMessage}
-            </p>
+            </div>
           </div>
         </div>
       )}
