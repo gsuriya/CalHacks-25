@@ -387,14 +387,14 @@ export default function TryOnPage({ params }: { params: Promise<{ productId: str
                       >
                         Retake
                       </button>
-                      <button
+              <button
                         onClick={startTryOn}
                         className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white py-2 rounded-lg"
-                      >
+              >
                         Retry
-                      </button>
-                    </div>
-                  </div>
+              </button>
+            </div>
+          </div>
                 ) : (
                   <div className="flex gap-3">
                     <button

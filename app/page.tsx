@@ -4,6 +4,7 @@ import { Mic, MicOff, Volume2, VolumeX, Camera, RotateCcw } from "lucide-react"
 import AnimatedBackground from "./components/AnimatedBackground"
 import VapiVoiceWidget from "../components/VapiVoiceWidget"
 import TranscriptBox from "../components/TranscriptBox"
+import { analyzeAndStoreSkinTone } from "../lib/skin-tone-storage"
 
 export default function HomePage() {
   const [micEnabled, setMicEnabled] = useState(false)
@@ -17,6 +18,10 @@ export default function HomePage() {
   const [voiceTranscript, setVoiceTranscript] = useState<Array<{role: string, text: string}>>([])
   const [isVoiceConnected, setIsVoiceConnected] = useState(false)
   const [isVoiceSpeaking, setIsVoiceSpeaking] = useState(false)
+  
+  // Skin tone analysis states
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [analysisMessage, setAnalysisMessage] = useState<string | null>(null)
   
   const videoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
@@ -81,8 +86,13 @@ export default function HomePage() {
     startCamera(newFacingMode)
   }
 
-  const capturePhoto = () => {
-    if (videoRef.current && cameraEnabled) {
+  const capturePhoto = async () => {
+    if (!videoRef.current || !cameraEnabled) return
+    
+    try {
+      setIsAnalyzing(true)
+      setAnalysisMessage("Analyzing skin tone...")
+      
       const canvas = document.createElement('canvas')
       const context = canvas.getContext('2d')
       
@@ -91,18 +101,29 @@ export default function HomePage() {
         canvas.height = videoRef.current.videoHeight
         context.drawImage(videoRef.current, 0, 0)
         
-        // Convert to blob and download or process
-        canvas.toBlob((blob) => {
-          if (blob) {
-            const url = URL.createObjectURL(blob)
-            const a = document.createElement('a')
-            a.href = url
-            a.download = `style-ai-photo-${Date.now()}.jpg`
-            a.click()
-            URL.revokeObjectURL(url)
-          }
-        }, 'image/jpeg', 0.9)
+        // Get image data as base64
+        const imageDataUrl = canvas.toDataURL('image/jpeg', 0.8)
+        
+        // Analyze skin tone and store it
+        await analyzeAndStoreSkinTone(imageDataUrl)
+        
+        setAnalysisMessage("Skin tone updated! ✨")
+        
+        // Clear message after 3 seconds
+        setTimeout(() => {
+          setAnalysisMessage(null)
+        }, 3000)
       }
+    } catch (error) {
+      console.error('Skin tone analysis failed:', error)
+      setAnalysisMessage("Analysis failed. Please try again.")
+      
+      // Clear error message after 3 seconds
+      setTimeout(() => {
+        setAnalysisMessage(null)
+      }, 3000)
+    } finally {
+      setIsAnalyzing(false)
     }
   }
 
@@ -193,6 +214,20 @@ export default function HomePage() {
         isSpeaking={isVoiceSpeaking}
       />
 
+      {/* Skin Tone Analysis Feedback - Top Center */}
+      {analysisMessage && (
+        <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-40">
+          <div className="glass-card rounded-2xl px-6 py-3 animate-slide-up">
+            <p className="text-white font-medium text-center flex items-center gap-2">
+              {isAnalyzing && (
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              )}
+              {analysisMessage}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Vapi Voice Widget - No UI, just handles voice logic */}
       <VapiVoiceWidget 
         isEnabled={micEnabled}
@@ -232,16 +267,20 @@ export default function HomePage() {
             {/* Capture Button */}
             <button
               onClick={capturePhoto}
-              disabled={!cameraEnabled}
+              disabled={!cameraEnabled || isAnalyzing}
               className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ${
-                cameraEnabled 
+                cameraEnabled && !isAnalyzing
                   ? "bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 animate-gradient animate-pulse-glow"
                   : "bg-gray-600 opacity-50"
               }`}
               aria-label="Capture photo"
             >
               <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center">
-                <Camera className="text-black" size={24} />
+                {isAnalyzing ? (
+                  <div className="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <Camera className="text-black" size={24} />
+                )}
               </div>
             </button>
 

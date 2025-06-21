@@ -4,13 +4,6 @@ import { X, Heart, Shirt, Filter, ChevronLeft, ChevronRight, Palette } from "luc
 import AnimatedBackground from "../components/AnimatedBackground"
 import { isColorMatch, getSkinToneDescription, SkinToneAnalysis } from "../../lib/skin-tone-analysis"
 import { getStoredSkinTone, useSkinToneListener } from "../../lib/skin-tone-storage"
-import { 
-  productFilterManager, 
-  createDefaultActiveFilters,
-  type ProductFiltersMap,
-  type FilterOptions,
-  type ActiveFilters 
-} from "../../lib/product-filters"
 
 interface Product {
   id: string
@@ -53,13 +46,6 @@ export default function SwipePage() {
   const [skinToneAnalysis, setSkinToneAnalysis] = useState<SkinToneAnalysis | null>(null)
   const [skinToneMatching, setSkinToneMatching] = useState(false)
 
-  // Filter system state (now loads instantly from static files)
-  const [filtersMap] = useState<ProductFiltersMap>(productFilterManager.getFiltersMap())
-  const [filterOptions] = useState<FilterOptions>(productFilterManager.getFilterOptions())
-  const [activeFilters, setActiveFilters] = useState<ActiveFilters>(
-    createDefaultActiveFilters(productFilterManager.getFilterOptions())
-  )
-
   // Load stored skin tone analysis on component mount
   useEffect(() => {
     const stored = getStoredSkinTone()
@@ -75,7 +61,7 @@ export default function SwipePage() {
     return cleanup
   }, [])
 
-  // Fetch ALL products from the API (filter system is ready immediately)
+  // Fetch ALL products from the API
   useEffect(() => {
     const fetchAllProducts = async () => {
       try {
@@ -172,7 +158,13 @@ export default function SwipePage() {
         console.log(`Successfully loaded ${productsWithImages.length} products with images`)
         
         setAllProducts(productsWithImages)
-        applyFilters(productsWithImages) // Apply initial filters
+        setFilteredProducts(productsWithImages)
+        
+        // Set initial random product
+        if (productsWithImages.length > 0) {
+          const randomIndex = Math.floor(Math.random() * productsWithImages.length)
+          setCurrentProduct(productsWithImages[randomIndex])
+        }
         
         setLoadingProgress(100)
       } catch (error) {
@@ -184,55 +176,28 @@ export default function SwipePage() {
     }
 
     fetchAllProducts()
-  }, []) // No dependency on filterSystemReady since it's always ready
+  }, [])
 
-  // Apply filters using the filter system
-  const applyFilters = (productList: Product[] = allProducts) => {
-    let filtered = productList
-
-    // First apply regular filters using the filter manager
-    if (productList.length > 0) {
-      const productIds = productList.map(p => p.id)
-      const filteredIds = productFilterManager.filterProducts(productIds, activeFilters)
-      filtered = productList.filter(p => filteredIds.includes(p.id))
-    }
-
-    // Then apply skin tone matching if enabled
-    if (skinToneMatching && skinToneAnalysis) {
-      filtered = filtered.filter(product => {
+  // Filter products based on skin tone analysis
+  useEffect(() => {
+    if (skinToneMatching && skinToneAnalysis && allProducts.length > 0) {
+      const matchingProducts = allProducts.filter(product => {
+        // For simplicity, we'll use the color field to match against skin tone
+        // In a real app, you'd have actual hex color values for each product
         const productColorHex = getProductColorHex(product.color)
         return isColorMatch(productColorHex, skinToneAnalysis)
       })
-    }
-    
-    setFilteredProducts(filtered)
-    
-    // Set initial current product if none selected or current product is filtered out
-    if (!currentProduct || !filtered.find(p => p.id === currentProduct.id)) {
-      if (filtered.length > 0) {
-        const randomIndex = Math.floor(Math.random() * filtered.length)
-        setCurrentProduct(filtered[randomIndex])
-      } else {
-        setCurrentProduct(null)
+      setFilteredProducts(matchingProducts)
+      
+      // Update current product if it doesn't match
+      if (currentProduct && !matchingProducts.find(p => p.id === currentProduct.id)) {
+        const nextProduct = getRandomProduct(matchingProducts)
+        setCurrentProduct(nextProduct)
       }
+    } else {
+      setFilteredProducts(allProducts)
     }
-    
-    console.log(`Applied filters: ${productList.length} -> ${filtered.length} products`)
-  }
-
-  // Update active filters and reapply
-  const updateFilters = (newFilters: Partial<ActiveFilters>) => {
-    const updatedFilters = { ...activeFilters, ...newFilters }
-    setActiveFilters(updatedFilters)
-    applyFilters(allProducts)
-  }
-
-  // Reapply filters when skin tone matching changes
-  useEffect(() => {
-    if (allProducts.length > 0) {
-      applyFilters(allProducts)
-    }
-  }, [skinToneMatching, skinToneAnalysis])
+  }, [skinToneMatching, skinToneAnalysis, allProducts, currentProduct])
 
   const getRandomProduct = (productList: Product[] = filteredProducts) => {
     if (productList.length === 0) return null
@@ -283,17 +248,13 @@ export default function SwipePage() {
     return 'Stylish'
   }
 
-  // Toggle filter selection
-  const toggleFilter = (filterType: keyof ActiveFilters, value: string) => {
-    if (filterType === 'colors' || filterType === 'stores' || filterType === 'stockStatus' || 
-        filterType === 'materials' || filterType === 'occasions' || filterType === 'seasons') {
-      const currentValues = activeFilters[filterType] as string[]
-      const newValues = currentValues.includes(value)
-        ? currentValues.filter(v => v !== value)
-        : [...currentValues, value]
-      
-      updateFilters({ [filterType]: newValues })
-    }
+  // Get unique values for filters
+  const getUniqueTypes = () => {
+    return [...new Set(allProducts.map(p => p.type))].sort()
+  }
+
+  const getUniqueColors = () => {
+    return [...new Set(allProducts.map(p => p.color))].sort()
   }
 
   // Convert color names to hex codes for skin tone analysis
@@ -519,19 +480,7 @@ export default function SwipePage() {
       <div className="min-h-screen relative pb-20">
         <AnimatedBackground />
         <div className="relative z-10 flex items-center justify-center h-screen">
-          <div className="text-center">
-            <p className="text-white text-lg mb-4">No products available with current filters</p>
-            <button
-              onClick={() => {
-                setActiveFilters(createDefaultActiveFilters(filterOptions))
-                setSkinToneMatching(false)
-                applyFilters()
-              }}
-              className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl"
-            >
-              Reset Filters
-            </button>
-          </div>
+          <p className="text-white text-lg">No products available</p>
         </div>
       </div>
     )
@@ -552,7 +501,6 @@ export default function SwipePage() {
                 <span className="text-purple-400"> (skin matched)</span>
               )}
             </p>
-            <p className="text-gray-600 text-xs">Filters: {productFilterManager.getMetadata().generatedAt.split('T')[0]}</p>
           </div>
         </div>
 
@@ -742,19 +690,29 @@ export default function SwipePage() {
             </div>
 
             <div className="space-y-6">
+              {/* Product Types */}
+              <div>
+                <h3 className="font-semibold mb-3">Product Types ({getUniqueTypes().length})</h3>
+                <div className="flex flex-wrap gap-2">
+                  {getUniqueTypes().map((type) => (
+                    <button
+                      key={type}
+                      className="px-4 py-2 bg-white/10 rounded-full text-sm hover:bg-white/20 transition-all duration-300"
+                    >
+                      {type}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* Colors */}
               <div>
-                <h3 className="font-semibold mb-3">Colors ({filterOptions.colors.length})</h3>
+                <h3 className="font-semibold mb-3">Colors ({getUniqueColors().length})</h3>
                 <div className="flex flex-wrap gap-2">
-                  {filterOptions.colors.map((color) => (
+                  {getUniqueColors().map((color) => (
                     <button
                       key={color}
-                      onClick={() => toggleFilter('colors', color)}
-                      className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${
-                        activeFilters.colors.includes(color)
-                          ? 'bg-purple-500 text-white'
-                          : 'bg-white/10 hover:bg-white/20'
-                      }`}
+                      className="px-4 py-2 bg-white/10 rounded-full text-sm hover:bg-white/20 transition-all duration-300"
                     >
                       {color}
                     </button>
@@ -766,15 +724,10 @@ export default function SwipePage() {
               <div>
                 <h3 className="font-semibold mb-3">Availability</h3>
                 <div className="flex flex-wrap gap-2">
-                  {filterOptions.stockStatus.map((status) => (
+                  {["In Stock", "Low Stock", "All Items"].map((status) => (
                     <button
                       key={status}
-                      onClick={() => toggleFilter('stockStatus', status)}
-                      className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${
-                        activeFilters.stockStatus.includes(status)
-                          ? 'bg-purple-500 text-white'
-                          : 'bg-white/10 hover:bg-white/20'
-                      }`}
+                      className="px-4 py-2 bg-white/10 rounded-full text-sm hover:bg-white/20 transition-all duration-300"
                     >
                       {status}
                     </button>
@@ -783,23 +736,9 @@ export default function SwipePage() {
               </div>
             </div>
 
-            <div className="flex gap-3 mt-6">
-              <button 
-                onClick={() => {
-                  setActiveFilters(createDefaultActiveFilters(filterOptions))
-                  applyFilters()
-                }}
-                className="flex-1 bg-white/10 text-white py-4 rounded-2xl font-semibold"
-              >
-                Reset Filters
-              </button>
-              <button 
-                onClick={() => setShowFilters(false)}
-                className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white py-4 rounded-2xl font-semibold animate-pulse-glow"
-              >
-                Apply Filters
-              </button>
-            </div>
+            <button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-4 rounded-2xl font-semibold mt-6 animate-pulse-glow">
+              Apply Filters
+            </button>
           </div>
         </div>
       )}
