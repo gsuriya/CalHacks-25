@@ -380,6 +380,11 @@ export default function SwipePage() {
           </button>
 
           <button
+            onClick={() => {
+              if (currentProduct) {
+                window.location.href = `/try-on/${currentProduct.id}`
+              }
+            }}
             className="w-14 h-14 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 flex items-center justify-center animate-pulse-glow"
             aria-label="Try on"
           >
