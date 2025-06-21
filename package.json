@@ -6,7 +6,8 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "generate-filters": "node scripts/generate-filters-map.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

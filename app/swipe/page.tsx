@@ -2,6 +2,13 @@
 import { useState, useEffect } from "react"
 import { X, Heart, Shirt, Filter, ChevronLeft, ChevronRight } from "lucide-react"
 import AnimatedBackground from "../components/AnimatedBackground"
+import { 
+  productFilterManager, 
+  createDefaultActiveFilters,
+  type ProductFiltersMap,
+  type FilterOptions,
+  type ActiveFilters 
+} from "../../lib/product-filters"
 
 interface Product {
   id: string
@@ -39,8 +46,15 @@ export default function SwipePage() {
   const [error, setError] = useState<string | null>(null)
   const [showFilters, setShowFilters] = useState(false)
   const [likedProducts, setLikedProducts] = useState<Set<string>>(new Set())
+  
+  // Filter system state (now loads instantly from static files)
+  const [filtersMap] = useState<ProductFiltersMap>(productFilterManager.getFiltersMap())
+  const [filterOptions] = useState<FilterOptions>(productFilterManager.getFilterOptions())
+  const [activeFilters, setActiveFilters] = useState<ActiveFilters>(
+    createDefaultActiveFilters(productFilterManager.getFilterOptions())
+  )
 
-  // Fetch ALL products from the API
+  // Fetch ALL products from the API (filter system is ready immediately)
   useEffect(() => {
     const fetchAllProducts = async () => {
       try {
@@ -137,13 +151,7 @@ export default function SwipePage() {
         console.log(`Successfully loaded ${productsWithImages.length} products with images`)
         
         setAllProducts(productsWithImages)
-        setFilteredProducts(productsWithImages)
-        
-        // Set initial random product
-        if (productsWithImages.length > 0) {
-          const randomIndex = Math.floor(Math.random() * productsWithImages.length)
-          setCurrentProduct(productsWithImages[randomIndex])
-        }
+        applyFilters(productsWithImages) // Apply initial filters
         
         setLoadingProgress(100)
       } catch (error) {
@@ -155,7 +163,40 @@ export default function SwipePage() {
     }
 
     fetchAllProducts()
-  }, [])
+  }, []) // No dependency on filterSystemReady since it's always ready
+
+  // Apply filters using the filter system
+  const applyFilters = (productList: Product[] = allProducts) => {
+    // Get product IDs and filter them using the filter manager
+    const productIds = productList.map(p => p.id)
+    const filteredIds = productFilterManager.filterProducts(productIds, activeFilters)
+    
+    // Get the filtered products
+    const filtered = productList.filter(p => filteredIds.includes(p.id))
+    setFilteredProducts(filtered)
+    
+    // Set initial current product if none selected
+    if (!currentProduct && filtered.length > 0) {
+      const randomIndex = Math.floor(Math.random() * filtered.length)
+      setCurrentProduct(filtered[randomIndex])
+    }
+    
+    console.log(`Applied filters: ${productList.length} -> ${filtered.length} products`)
+  }
+
+  // Update active filters and reapply
+  const updateFilters = (newFilters: Partial<ActiveFilters>) => {
+    const updatedFilters = { ...activeFilters, ...newFilters }
+    setActiveFilters(updatedFilters)
+    
+    // Apply filters immediately
+    const productIds = allProducts.map(p => p.id)
+    const filteredIds = productFilterManager.filterProducts(productIds, updatedFilters)
+    const filtered = allProducts.filter(p => filteredIds.includes(p.id))
+    setFilteredProducts(filtered)
+    
+    console.log(`Updated filters: ${allProducts.length} -> ${filtered.length} products`)
+  }
 
   const getRandomProduct = (productList: Product[] = filteredProducts) => {
     if (productList.length === 0) return null
@@ -206,13 +247,17 @@ export default function SwipePage() {
     return 'Stylish'
   }
 
-  // Get unique values for filters
-  const getUniqueTypes = () => {
-    return [...new Set(allProducts.map(p => p.type))].sort()
-  }
-
-  const getUniqueColors = () => {
-    return [...new Set(allProducts.map(p => p.color))].sort()
+  // Toggle filter selection
+  const toggleFilter = (filterType: keyof ActiveFilters, value: string) => {
+    if (filterType === 'colors' || filterType === 'stores' || filterType === 'stockStatus' || 
+        filterType === 'materials' || filterType === 'occasions' || filterType === 'seasons') {
+      const currentValues = activeFilters[filterType] as string[]
+      const newValues = currentValues.includes(value)
+        ? currentValues.filter(v => v !== value)
+        : [...currentValues, value]
+      
+      updateFilters({ [filterType]: newValues })
+    }
   }
 
   if (loading) {
@@ -265,7 +310,16 @@ export default function SwipePage() {
       <div className="min-h-screen relative pb-20">
         <AnimatedBackground />
         <div className="relative z-10 flex items-center justify-center h-screen">
-          <p className="text-white text-lg">No products available</p>
+          <p className="text-white text-lg">No products available with current filters</p>
+          <button
+            onClick={() => {
+              setActiveFilters(createDefaultActiveFilters(filterOptions))
+              applyFilters()
+            }}
+            className="ml-4 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl"
+          >
+            Reset Filters
+          </button>
         </div>
       </div>
     )
@@ -281,6 +335,7 @@ export default function SwipePage() {
           <div className="text-right">
             <p className="text-gray-400 text-sm">{allProducts.length} items loaded</p>
             <p className="text-gray-500 text-xs">{filteredProducts.length} available</p>
+            <p className="text-gray-600 text-xs">Filters: {productFilterManager.getMetadata().generatedAt.split('T')[0]}</p>
           </div>
         </div>
 
@@ -413,7 +468,7 @@ export default function SwipePage() {
       {/* Filter Drawer */}
       {showFilters && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end">
-          <div className="w-full glass-card rounded-t-3xl p-6 animate-slide-up">
+          <div className="w-full glass-card rounded-t-3xl p-6 animate-slide-up max-h-[80vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold gradient-text">Filters</h2>
               <button onClick={() => setShowFilters(false)} className="text-gray-400 hover:text-white">
@@ -422,55 +477,140 @@ export default function SwipePage() {
             </div>
 
             <div className="space-y-6">
-              {/* Product Types */}
+              {/* Colors */}
+              {filterOptions.colors.length > 0 && (
+                <div>
+                  <h3 className="font-semibold mb-3">Colors ({filterOptions.colors.length})</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {filterOptions.colors.map((color) => (
+                      <button
+                        key={color}
+                        onClick={() => toggleFilter('colors', color)}
+                        className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${
+                          activeFilters.colors.includes(color)
+                            ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                            : 'bg-white/10 hover:bg-white/20'
+                        }`}
+                      >
+                        {color}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Price Range */}
               <div>
-                <h3 className="font-semibold mb-3">Product Types ({getUniqueTypes().length})</h3>
-                <div className="flex flex-wrap gap-2">
-                  {getUniqueTypes().map((type) => (
-                    <button
-                      key={type}
-                      className="px-4 py-2 bg-white/10 rounded-full text-sm hover:bg-white/20 transition-all duration-300"
-                    >
-                      {type}
-                    </button>
-                  ))}
+                <h3 className="font-semibold mb-3">
+                  Price Range (${filterOptions.priceRange.min} - ${filterOptions.priceRange.max})
+                </h3>
+                <div className="flex gap-4 items-center">
+                  <div className="flex-1">
+                    <label className="text-sm text-gray-400">Min: ${activeFilters.priceMin}</label>
+                    <input
+                      type="range"
+                      min={filterOptions.priceRange.min}
+                      max={filterOptions.priceRange.max}
+                      value={activeFilters.priceMin}
+                      onChange={(e) => updateFilters({ priceMin: Number(e.target.value) })}
+                      className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="text-sm text-gray-400">Max: ${activeFilters.priceMax}</label>
+                    <input
+                      type="range"
+                      min={filterOptions.priceRange.min}
+                      max={filterOptions.priceRange.max}
+                      value={activeFilters.priceMax}
+                      onChange={(e) => updateFilters({ priceMax: Number(e.target.value) })}
+                      className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                    />
+                  </div>
                 </div>
               </div>
 
-              {/* Colors */}
-              <div>
-                <h3 className="font-semibold mb-3">Colors ({getUniqueColors().length})</h3>
-                <div className="flex flex-wrap gap-2">
-                  {getUniqueColors().map((color) => (
-                    <button
-                      key={color}
-                      className="px-4 py-2 bg-white/10 rounded-full text-sm hover:bg-white/20 transition-all duration-300"
-                    >
-                      {color}
-                    </button>
-                  ))}
+              {/* Stores (Product Types) */}
+              {filterOptions.stores.length > 0 && (
+                <div>
+                  <h3 className="font-semibold mb-3">Product Types ({filterOptions.stores.length})</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {filterOptions.stores.map((store) => (
+                      <button
+                        key={store}
+                        onClick={() => toggleFilter('stores', store)}
+                        className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${
+                          activeFilters.stores.includes(store)
+                            ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white'
+                            : 'bg-white/10 hover:bg-white/20'
+                        }`}
+                      >
+                        {store}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Stock Status */}
               <div>
                 <h3 className="font-semibold mb-3">Availability</h3>
                 <div className="flex flex-wrap gap-2">
-                  {["In Stock", "Low Stock", "All Items"].map((status) => (
+                  {[
+                    { value: 'inStock', label: 'In Stock' },
+                    { value: 'lowStock', label: 'Low Stock' },
+                    { value: 'outOfStock', label: 'Out of Stock' }
+                  ].map(({ value, label }) => (
                     <button
-                      key={status}
-                      className="px-4 py-2 bg-white/10 rounded-full text-sm hover:bg-white/20 transition-all duration-300"
+                      key={value}
+                      onClick={() => toggleFilter('stockStatus', value)}
+                      className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${
+                        activeFilters.stockStatus.includes(value as any)
+                          ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white'
+                          : 'bg-white/10 hover:bg-white/20'
+                      }`}
                     >
-                      {status}
+                      {label}
                     </button>
                   ))}
                 </div>
               </div>
+
+              {/* Placeholder sections for LLM-based filters */}
+              <div className="opacity-50">
+                <h3 className="font-semibold mb-3">Material (Coming Soon)</h3>
+                <p className="text-gray-500 text-sm">Will be populated by AI analysis</p>
+              </div>
+
+              <div className="opacity-50">
+                <h3 className="font-semibold mb-3">Occasion (Coming Soon)</h3>
+                <p className="text-gray-500 text-sm">Will be populated by AI analysis</p>
+              </div>
+
+              <div className="opacity-50">
+                <h3 className="font-semibold mb-3">Season (Coming Soon)</h3>
+                <p className="text-gray-500 text-sm">Will be populated by AI analysis</p>
+              </div>
             </div>
 
-            <button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-4 rounded-2xl font-semibold mt-6 animate-pulse-glow">
-              Apply Filters
-            </button>
+            <div className="flex gap-2 mt-6">
+              <button 
+                onClick={() => {
+                  setActiveFilters(createDefaultActiveFilters(filterOptions))
+                  applyFilters()
+                  setShowFilters(false)
+                }}
+                className="flex-1 bg-gray-600 text-white py-4 rounded-2xl font-semibold"
+              >
+                Reset Filters
+              </button>
+              <button 
+                onClick={() => setShowFilters(false)}
+                className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white py-4 rounded-2xl font-semibold animate-pulse-glow"
+              >
+                Apply ({filteredProducts.length} items)
+              </button>
+            </div>
           </div>
         </div>
       )}

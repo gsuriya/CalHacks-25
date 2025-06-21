@@ -1,0 +1,46 @@
+{
+  "colors": [
+    "any color",
+    "beige",
+    "black",
+    "burgundy",
+    "camel",
+    "charcoal",
+    "cream",
+    "dark blue",
+    "forest green",
+    "gray",
+    "light colored",
+    "light green",
+    "mint green",
+    "navy",
+    "navy blue",
+    "ocean blue",
+    "pastel blue",
+    "purple",
+    "red",
+    "sage green",
+    "terracotta",
+    "vintage blue",
+    "white",
+    "yellow"
+  ],
+  "priceRange": {
+    "min": 20.21,
+    "max": 128.28
+  },
+  "stores": [
+    "long sleeve",
+    "scarf",
+    "sweater",
+    "t-shirt"
+  ],
+  "stockStatus": [
+    "inStock",
+    "outOfStock",
+    "lowStock"
+  ],
+  "materials": [],
+  "occasions": [],
+  "seasons": []
+}
