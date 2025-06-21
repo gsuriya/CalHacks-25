@@ -1,7 +1,8 @@
 "use client"
-import { useState, useEffect } from "react"
-import { X, Heart, Shirt, Filter, ChevronLeft, ChevronRight } from "lucide-react"
+import { useState, useEffect, useRef } from "react"
+import { X, Heart, Shirt, Filter, ChevronLeft, ChevronRight, Camera, Palette } from "lucide-react"
 import AnimatedBackground from "../components/AnimatedBackground"
+import { analyzeSkinTone, isColorMatch, getSkinToneDescription, SkinToneAnalysis } from "../../lib/skin-tone-analysis"
 
 interface Product {
   id: string
@@ -39,6 +40,15 @@ export default function SwipePage() {
   const [error, setError] = useState<string | null>(null)
   const [showFilters, setShowFilters] = useState(false)
   const [likedProducts, setLikedProducts] = useState<Set<string>>(new Set())
+  
+  // Skin tone analysis state
+  const [skinToneAnalysis, setSkinToneAnalysis] = useState<SkinToneAnalysis | null>(null)
+  const [skinToneMatching, setSkinToneMatching] = useState(false)
+  const [showSkinToneCapture, setShowSkinToneCapture] = useState(false)
+  const [cameraActive, setCameraActive] = useState(false)
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const streamRef = useRef<MediaStream | null>(null)
 
   // Fetch ALL products from the API
   useEffect(() => {
@@ -157,6 +167,27 @@ export default function SwipePage() {
     fetchAllProducts()
   }, [])
 
+  // Filter products based on skin tone analysis
+  useEffect(() => {
+    if (skinToneMatching && skinToneAnalysis && allProducts.length > 0) {
+      const matchingProducts = allProducts.filter(product => {
+        // For simplicity, we'll use the color field to match against skin tone
+        // In a real app, you'd have actual hex color values for each product
+        const productColorHex = getProductColorHex(product.color)
+        return isColorMatch(productColorHex, skinToneAnalysis)
+      })
+      setFilteredProducts(matchingProducts)
+      
+      // Update current product if it doesn't match
+      if (currentProduct && !matchingProducts.find(p => p.id === currentProduct.id)) {
+        const nextProduct = getRandomProduct(matchingProducts)
+        setCurrentProduct(nextProduct)
+      }
+    } else {
+      setFilteredProducts(allProducts)
+    }
+  }, [skinToneMatching, skinToneAnalysis, allProducts, currentProduct])
+
   const getRandomProduct = (productList: Product[] = filteredProducts) => {
     if (productList.length === 0) return null
     const randomIndex = Math.floor(Math.random() * productList.length)
@@ -213,6 +244,97 @@ export default function SwipePage() {
 
   const getUniqueColors = () => {
     return [...new Set(allProducts.map(p => p.color))].sort()
+  }
+
+  // Convert color names to hex codes for skin tone analysis
+  const getProductColorHex = (colorName: string): string => {
+    const colorMap: { [key: string]: string } = {
+      'black': '#000000',
+      'white': '#FFFFFF',
+      'red': '#FF0000',
+      'blue': '#0000FF',
+      'green': '#008000',
+      'yellow': '#FFFF00',
+      'pink': '#FFC0CB',
+      'purple': '#800080',
+      'orange': '#FFA500',
+      'brown': '#A52A2A',
+      'gray': '#808080',
+      'grey': '#808080',
+      'navy': '#000080',
+      'beige': '#F5F5DC',
+      'cream': '#FFFDD0',
+      'tan': '#D2B48C',
+      'gold': '#FFD700',
+      'silver': '#C0C0C0',
+      'burgundy': '#800020',
+      'maroon': '#800000',
+      'olive': '#808000',
+      'teal': '#008080',
+      'turquoise': '#40E0D0',
+      'coral': '#FF7F50',
+      'salmon': '#FA8072',
+      'khaki': '#F0E68C',
+      'mint': '#98FB98',
+      'lavender': '#E6E6FA',
+      'ivory': '#FFFFF0'
+    }
+    
+    const normalizedColor = colorName.toLowerCase().trim()
+    return colorMap[normalizedColor] || '#808080' // Default to gray if color not found
+  }
+
+  // Camera functions for skin tone analysis
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } }
+      })
+      
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream
+        streamRef.current = stream
+        setCameraActive(true)
+      }
+    } catch (error) {
+      console.error('Camera access error:', error)
+      alert('Unable to access camera. Please allow camera permission.')
+    }
+  }
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop())
+      streamRef.current = null
+    }
+    setCameraActive(false)
+  }
+
+  const captureSkinTone = async () => {
+    if (!videoRef.current || !canvasRef.current) return
+
+    const canvas = canvasRef.current
+    const context = canvas.getContext('2d')
+    if (!context) return
+
+    canvas.width = videoRef.current.videoWidth
+    canvas.height = videoRef.current.videoHeight
+    context.drawImage(videoRef.current, 0, 0)
+
+    const imageData = canvas.toDataURL('image/jpeg', 0.8)
+    
+    try {
+      const analysis = await analyzeSkinTone(imageData)
+      setSkinToneAnalysis(analysis)
+      setShowSkinToneCapture(false)
+      stopCamera()
+      
+      // Auto-enable skin tone matching after analysis
+      setSkinToneMatching(true)
+    } catch (error) {
+      console.error('Skin tone analysis error:', error)
+      alert('Failed to analyze skin tone. Please try again.')
+    }
   }
 
   if (loading) {
@@ -280,8 +402,67 @@ export default function SwipePage() {
           <h1 className="text-2xl font-bold gradient-text">Discover Your Style</h1>
           <div className="text-right">
             <p className="text-gray-400 text-sm">{allProducts.length} items loaded</p>
-            <p className="text-gray-500 text-xs">{filteredProducts.length} available</p>
+            <p className="text-gray-500 text-xs">
+              {filteredProducts.length} available
+              {skinToneMatching && skinToneAnalysis && (
+                <span className="text-purple-400"> (skin matched)</span>
+              )}
+            </p>
           </div>
+        </div>
+
+        {/* Skin Tone Analysis Section */}
+        <div className="mb-6">
+          {skinToneAnalysis ? (
+            <div className="glass-card rounded-2xl p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div 
+                    className="w-8 h-8 rounded-full border-2 border-white/30"
+                    style={{ backgroundColor: skinToneAnalysis.skinHex }}
+                  ></div>
+                  <div>
+                    <p className="text-white font-semibold text-sm">
+                      {getSkinToneDescription(skinToneAnalysis)}
+                    </p>
+                    <p className="text-gray-400 text-xs">Your color season</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setSkinToneMatching(!skinToneMatching)}
+                    className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
+                      skinToneMatching
+                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                        : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                    }`}
+                  >
+                    {skinToneMatching ? 'Matching On' : 'Match Colors'}
+                  </button>
+                  <button
+                    onClick={() => setShowSkinToneCapture(true)}
+                    className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center"
+                    title="Retake skin tone analysis"
+                  >
+                    <Camera size={16} className="text-gray-400" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowSkinToneCapture(true)}
+              className="w-full glass-card rounded-2xl p-4 hover:bg-white/10 transition-all duration-300"
+            >
+              <div className="flex items-center justify-center gap-3">
+                <Palette className="text-purple-400" size={24} />
+                <div className="text-center">
+                  <p className="text-white font-semibold">Analyze Your Skin Tone</p>
+                  <p className="text-gray-400 text-sm">Get personalized color recommendations</p>
+                </div>
+              </div>
+            </button>
+          )}
         </div>
 
         {/* Product Card with Side Navigation */}
@@ -472,8 +653,81 @@ export default function SwipePage() {
               Apply Filters
             </button>
           </div>
-        </div>
-      )}
-    </div>
-  )
-}
+                  </div>
+        )}
+
+        {/* Skin Tone Capture Modal */}
+        {showSkinToneCapture && (
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="w-full max-w-md glass-card rounded-3xl p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold gradient-text">Analyze Skin Tone</h2>
+                <button 
+                  onClick={() => {
+                    setShowSkinToneCapture(false)
+                    stopCamera()
+                  }}
+                  className="text-gray-400 hover:text-white"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+
+              <div className="aspect-square rounded-2xl overflow-hidden bg-black mb-4">
+                {cameraActive ? (
+                  <video
+                    ref={videoRef}
+                    className="w-full h-full object-cover"
+                    autoPlay
+                    playsInline
+                    muted
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <div className="text-center">
+                      <Camera className="text-gray-400 mx-auto mb-2" size={48} />
+                      <p className="text-gray-300 mb-4">Position your face in the camera</p>
+                      <button
+                        onClick={startCamera}
+                        className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-semibold"
+                      >
+                        Start Camera
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {cameraActive && (
+                <div className="space-y-3">
+                  <p className="text-gray-300 text-sm text-center">
+                    Make sure your face is well-lit and clearly visible
+                  </p>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => {
+                        setShowSkinToneCapture(false)
+                        stopCamera()
+                      }}
+                      className="flex-1 bg-white/10 text-white py-3 rounded-xl"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={captureSkinTone}
+                      className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-semibold"
+                    >
+                      Analyze
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Hidden canvas for image processing */}
+        <canvas ref={canvasRef} className="hidden" />
+      </div>
+    )
+  }
