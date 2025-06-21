@@ -95,7 +95,7 @@ const VapiVoiceWidget: React.FC<VapiVoiceWidgetProps> = ({
     }
   }, [filterTranscript, onFiltersExtracted]);
 
-  // Monitor transcript for "filter" keyword and accumulate subsequent text
+  // Monitor transcript for "filter" or "recommend" keywords and accumulate subsequent text
   useEffect(() => {
     if (transcript.length === 0) return;
     
@@ -104,21 +104,32 @@ const VapiVoiceWidget: React.FC<VapiVoiceWidgetProps> = ({
       const newMessages = transcript.slice(lastTranscriptLength);
       setLastTranscriptLength(transcript.length);
       
-      // Look for "filter" keyword in new user messages
+      // Look for "filter" or "recommend" keywords in new user messages
       for (const message of newMessages) {
         if (message.role === 'user') {
           const text = message.text.toLowerCase();
           
+          // Check for either "filter" or "recommend" trigger words
+          let triggerWord = '';
+          let triggerIndex = -1;
+          
           if (text.includes('filter')) {
-            console.log('Filter keyword detected, activating filter mode');
+            triggerWord = 'filter';
+            triggerIndex = text.indexOf('filter');
+          } else if (text.includes('recommend')) {
+            triggerWord = 'recommend';
+            triggerIndex = text.indexOf('recommend');
+          }
+          
+          if (triggerWord && triggerIndex !== -1) {
+            console.log(`${triggerWord} keyword detected, activating filter mode`);
             setFilterModeActive(true);
             setFilterTranscript('');
             
-            // Start accumulating from the word after "filter"
-            const filterIndex = text.indexOf('filter');
-            const afterFilter = message.text.substring(filterIndex + 6).trim();
-            if (afterFilter) {
-              setFilterTranscript(afterFilter);
+            // Start accumulating from the word after the trigger word
+            const afterTrigger = message.text.substring(triggerIndex + triggerWord.length).trim();
+            if (afterTrigger) {
+              setFilterTranscript(afterTrigger);
             }
           } else if (filterModeActive) {
             // Accumulate transcript when in filter mode
