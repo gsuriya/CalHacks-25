@@ -170,20 +170,55 @@ const determineSeason = (r: number, g: number, b: number, undertone: string): 's
 const getColorRecommendations = (season: string, undertone: string) => {
   const colorMap = {
     spring: {
-      recommended: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57', '#FF9FF3', '#54A0FF'],
-      avoid: ['#2C2C54', '#40407A', '#706FD3', '#33D9B2']
+      recommended: [
+        // Warm & Bright Colors
+        '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57', '#FF9FF3', '#54A0FF',
+        '#FF0000', '#FFA500', '#FFFF00', '#FFD700', '#FF7F50', '#FF69B4', '#00FF00',
+        '#32CD32', '#ADFF2F', '#00CED1', '#1E90FF', '#FF1493', '#FF6347', '#FFA502',
+        '#F39C12', '#E74C3C', '#E67E22', '#2ECC71', '#3498DB', '#9B59B6', '#F1C40F',
+        '#FF8C00', '#DC143C', '#00BFFF', '#FF4500', '#DA70D6', '#20B2AA', '#87CEEB',
+        '#FFB6C1', '#98FB98', '#DDA0DD', '#F0E68C', '#FA8072', '#40E0D0', '#EE82EE'
+      ],
+      avoid: []
     },
     summer: {
-      recommended: ['#A8E6CF', '#88D8C0', '#FFD3A5', '#FD99A9', '#C7CEEA', '#B8B8D4'],
-      avoid: ['#FF6348', '#FF4757', '#FFA502', '#FF6B35']
+      recommended: [
+        // Soft & Cool Colors  
+        '#A8E6CF', '#88D8C0', '#FFD3A5', '#FD99A9', '#C7CEEA', '#B8B8D4',
+        '#E6E6FA', '#B0C4DE', '#87CEEB', '#F0F8FF', '#E0FFFF', '#F5FFFA',
+        '#FFF8DC', '#FFFACD', '#FFEFD5', '#F5F5DC', '#FAF0E6', '#FDF5E6',
+        '#FFFFF0', '#F0FFF0', '#F5FFFA', '#FFFAFA', '#F8F8FF', '#F0F8FF',
+        '#ADD8E6', '#B0E0E6', '#87CEFA', '#00BFFF', '#1E90FF', '#6495ED',
+        '#4169E1', '#0000CD', '#00008B', '#000080', '#191970', '#8A2BE2',
+        '#9400D3', '#9932CC', '#BA55D3', '#DA70D6', '#DDA0DD', '#EE82EE'
+      ],
+      avoid: []
     },
     autumn: {
-      recommended: ['#D63031', '#E17055', '#FDCB6E', '#E84393', '#6C5CE7', '#A29BFE'],
-      avoid: ['#0984E3', '#00B894', '#00CEC9', '#81ECEC']
+      recommended: [
+        // Rich & Warm Colors
+        '#D63031', '#E17055', '#FDCB6E', '#E84393', '#6C5CE7', '#A29BFE',
+        '#8B4513', '#A0522D', '#CD853F', '#D2691E', '#B22222', '#DC143C',
+        '#800000', '#8B0000', '#FF6347', '#FF4500', '#FF8C00', '#FFA500',
+        '#FFD700', '#FFFF00', '#9ACD32', '#32CD32', '#228B22', '#006400',
+        '#556B2F', '#808000', '#6B8E23', '#BDB76B', '#F0E68C', '#EEE8AA',
+        '#DAA520', '#B8860B', '#CD853F', '#D2B48C', '#F4A460', '#DEB887',
+        '#BC8F8F', '#F5DEB3', '#FFDAB9', '#FFE4B5', '#FFEFD5', '#FFF8DC'
+      ],
+      avoid: []
     },
     winter: {
-      recommended: ['#2D3436', '#636E72', '#0984E3', '#6C5CE7', '#E84393', '#FDCB6E'],
-      avoid: ['#FD79A8', '#FDCB6E', '#E17055', '#D63031']
+      recommended: [
+        // Bold & Cool Colors
+        '#2D3436', '#636E72', '#0984E3', '#6C5CE7', '#E84393', '#FDCB6E',
+        '#000000', '#2F3640', '#2C2C54', '#40407A', '#706FD3', '#3742FA',
+        '#2ED573', '#7BED9F', '#70A1FF', '#5352ED', '#FF6B6B', '#FF7675',
+        '#FDCB6E', '#E17055', '#00D2D3', '#00CEC9', '#6C5CE7', '#A29BFE',
+        '#FD79A8', '#FDCB6E', '#E84393', '#00B894', '#74B9FF', '#0984E3',
+        '#FFFFFF', '#F8F9FA', '#E9ECEF', '#DEE2E6', '#CED4DA', '#ADB5BD',
+        '#495057', '#343A40', '#212529', '#FF0000', '#0000FF', '#800080'
+      ],
+      avoid: []
     }
   }
   
@@ -201,10 +236,9 @@ const rgbToHex = (r: number, g: number, b: number): string => {
  * Check if a clothing color matches the user's skin tone
  */
 export const isColorMatch = (clothingColorHex: string, skinAnalysis: SkinToneAnalysis): boolean => {
+  // Much more inclusive matching - allow larger color distance and remove avoid colors restriction
   return skinAnalysis.recommendedColors.some(recommended => 
-    colorDistance(clothingColorHex, recommended) < 80
-  ) && !skinAnalysis.avoidColors.some(avoid => 
-    colorDistance(clothingColorHex, avoid) < 60
+    colorDistance(clothingColorHex, recommended) < 150
   )
 }
 

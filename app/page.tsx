@@ -1,8 +1,10 @@
 "use client"
 import { useState, useRef, useEffect } from "react"
-import { Mic, MicOff, Volume2, VolumeX, Camera, RotateCcw } from "lucide-react"
+import { Mic, MicOff, Volume2, VolumeX, Camera, RotateCcw, Palette } from "lucide-react"
 import AnimatedBackground from "./components/AnimatedBackground"
-import VoiceAgent from "./components/VoiceAgent"
+import VapiVoiceWidget from "../components/VapiVoiceWidget"
+import TranscriptBox from "../components/TranscriptBox"
+import { analyzeAndStoreSkinTone } from "../lib/skin-tone-storage"
 
 export default function HomePage() {
   const [micEnabled, setMicEnabled] = useState(false)
@@ -11,6 +13,13 @@ export default function HomePage() {
   const [cameraError, setCameraError] = useState<string | null>(null)
   const [isFrontCamera, setIsFrontCamera] = useState(true)
   const [micStream, setMicStream] = useState<MediaStream | null>(null)
+  const [isAnalyzingSkinTone, setIsAnalyzingSkinTone] = useState(false)
+  const [skinToneAnalyzed, setSkinToneAnalyzed] = useState(false)
+  
+  // Voice agent states
+  const [voiceTranscript, setVoiceTranscript] = useState<Array<{role: string, text: string}>>([])
+  const [isVoiceConnected, setIsVoiceConnected] = useState(false)
+  const [isVoiceSpeaking, setIsVoiceSpeaking] = useState(false)
   
   const videoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
@@ -22,6 +31,12 @@ export default function HomePage() {
       // Stop existing stream if any
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop())
+        streamRef.current = null
+      }
+
+      // Stop video element first to prevent AbortError
+      if (videoRef.current) {
+        videoRef.current.srcObject = null
       }
 
       const constraints = {
@@ -38,7 +53,13 @@ export default function HomePage() {
       
       if (videoRef.current) {
         videoRef.current.srcObject = stream
-        videoRef.current.play()
+        // Wait for video to be ready before playing
+        try {
+          await videoRef.current.play()
+        } catch (playError) {
+          console.warn('Video play error (non-critical):', playError)
+          // Don't throw error for play issues as they're often browser-specific
+        }
       }
       
       setCameraEnabled(true)
@@ -63,7 +84,7 @@ export default function HomePage() {
     startCamera(newFacingMode)
   }
 
-  const capturePhoto = () => {
+  const capturePhoto = async () => {
     if (videoRef.current && cameraEnabled) {
       const canvas = document.createElement('canvas')
       const context = canvas.getContext('2d')
@@ -73,7 +94,27 @@ export default function HomePage() {
         canvas.height = videoRef.current.videoHeight
         context.drawImage(videoRef.current, 0, 0)
         
-        // Convert to blob and download or process
+        // Get image data for skin tone analysis
+        const imageDataUrl = canvas.toDataURL('image/jpeg', 0.8)
+        
+        // Start skin tone analysis
+        setIsAnalyzingSkinTone(true)
+        
+        try {
+          // Analyze and store skin tone
+          await analyzeAndStoreSkinTone(imageDataUrl)
+          setSkinToneAnalyzed(true)
+          
+          // Show success feedback
+          setTimeout(() => setSkinToneAnalyzed(false), 3000)
+          
+        } catch (error) {
+          console.error('Skin tone analysis failed:', error)
+        } finally {
+          setIsAnalyzingSkinTone(false)
+        }
+        
+        // Convert to blob and download
         canvas.toBlob((blob) => {
           if (blob) {
             const url = URL.createObjectURL(blob)
@@ -130,6 +171,9 @@ export default function HomePage() {
 
   return (
     <div className="relative h-screen overflow-hidden">
+      {/* Animated Background - Always present */}
+      <AnimatedBackground />
+      
       {/* Camera Feed - Full Screen */}
       <div className="absolute inset-0">
         {cameraEnabled ? (
@@ -141,7 +185,7 @@ export default function HomePage() {
             muted
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-gray-900 to-black flex items-center justify-center">
+          <div className="w-full h-full flex items-center justify-center">
             <div className="text-center">
               <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center animate-pulse-glow">
                 <Camera size={48} className="text-white" />
@@ -165,8 +209,44 @@ export default function HomePage() {
       {/* Subtle Overlay for Better UI Visibility */}
       <div className="absolute inset-0 bg-black/10" />
 
-      {/* Voice Agent */}
-      <VoiceAgent isMicEnabled={micEnabled} />
+      {/* Voice Transcript Box - Top Left */}
+      <TranscriptBox 
+        transcript={voiceTranscript}
+        isConnected={isVoiceConnected}
+        isSpeaking={isVoiceSpeaking}
+      />
+
+      {/* Skin Tone Analysis Feedback - Top Center */}
+      {(isAnalyzingSkinTone || skinToneAnalyzed) && (
+        <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-40">
+          <div className={`glass-card rounded-2xl px-4 py-3 transition-all duration-300 ${
+            skinToneAnalyzed ? 'bg-green-500/20 border-green-400/30' : 'bg-purple-500/20 border-purple-400/30'
+          }`}>
+            <div className="flex items-center gap-3">
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                isAnalyzingSkinTone ? 'animate-spin' : ''
+              }`}>
+                <Palette className={`${
+                  skinToneAnalyzed ? 'text-green-400' : 'text-purple-400'
+                }`} size={16} />
+              </div>
+              <span className={`text-sm font-medium ${
+                skinToneAnalyzed ? 'text-green-300' : 'text-purple-300'
+              }`}>
+                {isAnalyzingSkinTone ? 'Analyzing skin tone...' : 'Skin tone updated!'}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Vapi Voice Widget - No UI, just handles voice logic */}
+      <VapiVoiceWidget 
+        isEnabled={micEnabled}
+        onTranscriptUpdate={setVoiceTranscript}
+        onConnectionChange={setIsVoiceConnected}
+        onSpeakingChange={setIsVoiceSpeaking}
+      />
 
       {/* Camera Controls - Top Right */}
       <div className="absolute top-6 right-6 z-40">
