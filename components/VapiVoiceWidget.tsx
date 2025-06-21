@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Vapi from '@vapi-ai/web';
 import { VAPI_CONFIG } from '../lib/vapi-config';
+import { parseVoiceToFilters, FilterResponse } from '../lib/gemini-api';
 
 interface VapiVoiceWidgetProps {
   apiKey?: string;
@@ -11,6 +12,7 @@ interface VapiVoiceWidgetProps {
   onTranscriptUpdate?: (transcript: Array<{role: string, text: string}>) => void;
   onConnectionChange?: (isConnected: boolean) => void;
   onSpeakingChange?: (isSpeaking: boolean) => void;
+  onFiltersExtracted?: (filters: FilterResponse) => void; // New prop for filter callback
 }
 
 const VapiVoiceWidget: React.FC<VapiVoiceWidgetProps> = ({ 
@@ -19,12 +21,18 @@ const VapiVoiceWidget: React.FC<VapiVoiceWidgetProps> = ({
   isEnabled,
   onTranscriptUpdate,
   onConnectionChange,
-  onSpeakingChange
+  onSpeakingChange,
+  onFiltersExtracted
 }) => {
   const [vapi, setVapi] = useState<Vapi | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [transcript, setTranscript] = useState<Array<{role: string, text: string}>>([]);
+  
+  // Filter detection state
+  const [filterModeActive, setFilterModeActive] = useState(false);
+  const [filterTranscript, setFilterTranscript] = useState('');
+  const [lastTranscriptLength, setLastTranscriptLength] = useState(0);
   
   // Use refs to avoid stale closures in event handlers
   const isConnectedRef = useRef(isConnected);
@@ -63,6 +71,72 @@ const VapiVoiceWidget: React.FC<VapiVoiceWidgetProps> = ({
       setTimeout(() => onTranscriptUpdate(newTranscript), 0);
     }
   }, [onTranscriptUpdate]);
+
+  // Filter extraction handler
+  const handleFilterExtraction = useCallback(async () => {
+    if (!filterTranscript.trim() || !onFiltersExtracted) return;
+    
+    try {
+      console.log('Extracting filters from transcript:', filterTranscript);
+      const filters = await parseVoiceToFilters(filterTranscript);
+      console.log('Extracted filters:', filters);
+      
+      if (Object.keys(filters).length > 0) {
+        onFiltersExtracted(filters);
+      }
+      
+      // Reset filter state
+      setFilterModeActive(false);
+      setFilterTranscript('');
+    } catch (error) {
+      console.error('Filter extraction failed:', error);
+      setFilterModeActive(false);
+      setFilterTranscript('');
+    }
+  }, [filterTranscript, onFiltersExtracted]);
+
+  // Monitor transcript for "filter" keyword and accumulate subsequent text
+  useEffect(() => {
+    if (transcript.length === 0) return;
+    
+    // Check if we have new transcript messages
+    if (transcript.length > lastTranscriptLength) {
+      const newMessages = transcript.slice(lastTranscriptLength);
+      setLastTranscriptLength(transcript.length);
+      
+      // Look for "filter" keyword in new user messages
+      for (const message of newMessages) {
+        if (message.role === 'user') {
+          const text = message.text.toLowerCase();
+          
+          if (text.includes('filter')) {
+            console.log('Filter keyword detected, activating filter mode');
+            setFilterModeActive(true);
+            setFilterTranscript('');
+            
+            // Start accumulating from the word after "filter"
+            const filterIndex = text.indexOf('filter');
+            const afterFilter = message.text.substring(filterIndex + 6).trim();
+            if (afterFilter) {
+              setFilterTranscript(afterFilter);
+            }
+          } else if (filterModeActive) {
+            // Accumulate transcript when in filter mode
+            setFilterTranscript(prev => prev + ' ' + message.text);
+            console.log('Accumulating filter transcript:', filterTranscript + ' ' + message.text);
+          }
+        }
+      }
+    }
+  }, [transcript, lastTranscriptLength, filterModeActive, filterTranscript]);
+
+  // Handle filter extraction when microphone stops
+  useEffect(() => {
+    if (!isEnabled && filterModeActive && filterTranscript.trim()) {
+      console.log('Microphone stopped, processing filter transcript');
+      handleFilterExtraction();
+    }
+  }, [isEnabled, filterModeActive, filterTranscript, handleFilterExtraction]);
 
   useEffect(() => {
     const vapiInstance = new Vapi(effectiveApiKey);

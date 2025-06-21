@@ -5,6 +5,7 @@ import AnimatedBackground from "./components/AnimatedBackground"
 import VapiVoiceWidget from "../components/VapiVoiceWidget"
 import TranscriptBox from "../components/TranscriptBox"
 import { analyzeAndStoreSkinTone } from "../lib/skin-tone-storage"
+import { FilterResponse } from "../lib/gemini-api"
 
 export default function HomePage() {
   const [micEnabled, setMicEnabled] = useState(false)
@@ -22,6 +23,9 @@ export default function HomePage() {
   // Skin tone analysis states
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [analysisMessage, setAnalysisMessage] = useState<string | null>(null)
+  
+  // Filter extraction state
+  const [extractedFilters, setExtractedFilters] = useState<FilterResponse | null>(null)
   
   const videoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
@@ -167,6 +171,27 @@ export default function HomePage() {
     }
   }, [])
 
+  // Handle filter extraction and navigation
+  useEffect(() => {
+    if (extractedFilters && Object.keys(extractedFilters).length > 0) {
+      console.log('Voice filters extracted, navigating to swipe page:', extractedFilters)
+      
+      // Store filters in localStorage for swipe page
+      localStorage.setItem('voiceExtractedFilters', JSON.stringify(extractedFilters))
+      
+      // Show feedback message
+      setAnalysisMessage("Filters applied! Navigating to products...")
+      
+      // Navigate to swipe page after a short delay
+      setTimeout(() => {
+        window.location.href = '/swipe'
+      }, 1500)
+      
+      // Reset the extracted filters
+      setExtractedFilters(null)
+    }
+  }, [extractedFilters])
+
   return (
     <div className="relative h-screen overflow-hidden">
       {/* Animated Background - Always present */}
@@ -234,6 +259,7 @@ export default function HomePage() {
         onTranscriptUpdate={setVoiceTranscript}
         onConnectionChange={setIsVoiceConnected}
         onSpeakingChange={setIsVoiceSpeaking}
+        onFiltersExtracted={setExtractedFilters}
       />
 
       {/* Camera Controls - Top Right */}

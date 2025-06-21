@@ -99,6 +99,42 @@ export default function SwipePage() {
     setSkinToneAnalysis(analysis)
   })
 
+  // Check for voice-extracted filters and apply them
+  useEffect(() => {
+    const voiceFilters = localStorage.getItem('voiceExtractedFilters')
+    if (voiceFilters && filterOptions && activeFilters) {
+      try {
+        const parsedFilters = JSON.parse(voiceFilters)
+        console.log('Applying voice-extracted filters:', parsedFilters)
+        
+        // Merge voice filters with current active filters
+        const mergedFilters = {
+          ...activeFilters,
+          // Apply voice filters, keeping existing defaults for missing fields
+          colors: parsedFilters.colors || activeFilters.colors,
+          stores: parsedFilters.stores || activeFilters.stores,
+          materials: parsedFilters.materials || activeFilters.materials,
+          occasions: parsedFilters.occasions || activeFilters.occasions,
+          seasons: parsedFilters.seasons || activeFilters.seasons,
+          priceMin: parsedFilters.priceMin !== undefined ? parsedFilters.priceMin : activeFilters.priceMin,
+          priceMax: parsedFilters.priceMax !== undefined ? parsedFilters.priceMax : activeFilters.priceMax,
+          inStock: parsedFilters.inStock !== undefined ? parsedFilters.inStock : activeFilters.inStock,
+        }
+        
+        setActiveFilters(mergedFilters)
+        
+        // Clear the stored filters
+        localStorage.removeItem('voiceExtractedFilters')
+        
+        console.log('Successfully applied voice filters:', mergedFilters)
+        
+      } catch (error) {
+        console.error('Failed to apply voice filters:', error)
+        localStorage.removeItem('voiceExtractedFilters') // Clear invalid data
+      }
+    }
+  }, [filterOptions, activeFilters])
+
   // Load static filter data and fetch products
   useEffect(() => {
     const loadFilterDataAndProducts = async () => {
