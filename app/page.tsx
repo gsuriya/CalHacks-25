@@ -2,7 +2,8 @@
 import { useState, useRef, useEffect } from "react"
 import { Mic, MicOff, Volume2, VolumeX, Camera, RotateCcw } from "lucide-react"
 import AnimatedBackground from "./components/AnimatedBackground"
-import VoiceAgent from "./components/VoiceAgent"
+import VapiVoiceWidget from "../components/VapiVoiceWidget"
+import TranscriptBox from "../components/TranscriptBox"
 
 export default function HomePage() {
   const [micEnabled, setMicEnabled] = useState(false)
@@ -11,6 +12,11 @@ export default function HomePage() {
   const [cameraError, setCameraError] = useState<string | null>(null)
   const [isFrontCamera, setIsFrontCamera] = useState(true)
   const [micStream, setMicStream] = useState<MediaStream | null>(null)
+  
+  // Voice agent states
+  const [voiceTranscript, setVoiceTranscript] = useState<Array<{role: string, text: string}>>([])
+  const [isVoiceConnected, setIsVoiceConnected] = useState(false)
+  const [isVoiceSpeaking, setIsVoiceSpeaking] = useState(false)
   
   const videoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
@@ -165,8 +171,20 @@ export default function HomePage() {
       {/* Subtle Overlay for Better UI Visibility */}
       <div className="absolute inset-0 bg-black/10" />
 
-      {/* Voice Agent */}
-      <VoiceAgent isMicEnabled={micEnabled} />
+      {/* Voice Transcript Box - Top Left */}
+      <TranscriptBox 
+        transcript={voiceTranscript}
+        isConnected={isVoiceConnected}
+        isSpeaking={isVoiceSpeaking}
+      />
+
+      {/* Vapi Voice Widget - No UI, just handles voice logic */}
+      <VapiVoiceWidget 
+        isEnabled={micEnabled}
+        onTranscriptUpdate={setVoiceTranscript}
+        onConnectionChange={setIsVoiceConnected}
+        onSpeakingChange={setIsVoiceSpeaking}
+      />
 
       {/* Camera Controls - Top Right */}
       <div className="absolute top-6 right-6 z-40">
