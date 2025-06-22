@@ -44,6 +44,7 @@ export default function TryOnPage({ params }: { params: Promise<{ productId: str
   useEffect(() => {
     const fetchProduct = async () => {
       try {
+        // First try to fetch from API
         const response = await fetch(`https://backend-879168005744.us-west1.run.app/products/${resolvedParams.productId}/display`)
         if (response.ok) {
           const data = await response.json()
@@ -56,7 +57,35 @@ export default function TryOnPage({ params }: { params: Promise<{ productId: str
             price: data.price,
             stock_status: data.stock_status
           })
+          return
         }
+        
+        // If API fails, check local products (like pants)
+        const filtersMapResponse = await fetch('/product-filters-map.json')
+        if (filtersMapResponse.ok) {
+          const filtersMapData = await filtersMapResponse.json()
+          const localProduct = filtersMapData[resolvedParams.productId]
+          
+          if (localProduct && localProduct.image) {
+            // This is a local product with an image
+            // For now, pants are IDs 208-209
+            const isPants = ['208', '209'].includes(resolvedParams.productId)
+            const itemType = isPants ? 'Pants' : 'Clothing'
+            const itemName = isPants ? 'pants' : 'item'
+            
+            setProduct({
+              id: resolvedParams.productId,
+              image: localProduct.image,
+              description: `${localProduct.color} ${itemName} from ${localProduct.store}`,
+              type: itemType,
+              color: localProduct.color,
+              price: `$${localProduct.price}`,
+              stock_status: localProduct.inStock > 0 ? 'in_stock' : 'out_of_stock'
+            })
+            return
+          }
+        }
+        
       } catch (error) {
         console.error('Error fetching product:', error)
       } finally {
@@ -169,6 +198,24 @@ export default function TryOnPage({ params }: { params: Promise<{ productId: str
         status: 'submitting'
       })
 
+      // Convert garment image to base64 if it's a local path
+      let garmentImage = product.image
+      if (product.image.startsWith('/')) {
+        // This is a local image, convert to base64
+        try {
+          const imageResponse = await fetch(product.image)
+          const imageBlob = await imageResponse.blob()
+          garmentImage = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader()
+            reader.onload = () => resolve(reader.result as string)
+            reader.onerror = reject
+            reader.readAsDataURL(imageBlob)
+          })
+        } catch (error) {
+          throw new Error('Failed to load garment image')
+        }
+      }
+
       // Submit to FASHN API
       const response = await fetch('/api/try-on', {
         method: 'POST',
@@ -177,7 +224,7 @@ export default function TryOnPage({ params }: { params: Promise<{ productId: str
         },
         body: JSON.stringify({
           model_image: capturedImage,
-          garment_image: product.image,
+          garment_image: garmentImage,
           category: getGarmentCategory(product.type),
           mode: 'balanced'
         })

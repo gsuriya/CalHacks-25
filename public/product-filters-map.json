@@ -1861,5 +1861,25 @@
     "material": "Organic Cotton",
     "occasion": "Party",
     "season": "Spring"
+  },
+  "208": {
+    "color": "Blue",
+    "price": 69.99,
+    "store": "Gap",
+    "inStock": 42,
+    "material": "Cotton",
+    "occasion": "Casual",
+    "season": "Spring",
+    "image": "/pants-1.png"
+  },
+  "209": {
+    "color": "Black",
+    "price": 79.99,
+    "store": "Zara",
+    "inStock": 38,
+    "material": "Cotton",
+    "occasion": "Casual",
+    "season": "Spring",
+    "image": "/pants-2.png"
   }
 }

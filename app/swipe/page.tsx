@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect } from "react"
-import { X, Heart, Shirt, Filter, ChevronLeft, ChevronRight, Palette } from "lucide-react"
+import { X, Heart, Shirt, Filter, ChevronLeft, ChevronRight, Palette, Plus } from "lucide-react"
 import AnimatedBackground from "../components/AnimatedBackground"
 import { isColorMatch, getSkinToneDescription, SkinToneAnalysis } from "../../lib/skin-tone-analysis"
 import { getStoredSkinTone, useSkinToneListener } from "../../lib/skin-tone-storage"
@@ -177,7 +177,31 @@ export default function SwipePage() {
         setLoadingProgress(20)
         
         console.log('Static filter data loaded successfully')
-        console.log('Starting to fetch products...')
+        
+        // Create local products from the filter map (like our pants)
+        const localProducts: Product[] = []
+        Object.entries(filtersMapData).forEach(([id, attributes]) => {
+          // Check if this entry has an image field (indicating it's a local product)
+          if ((attributes as any).image) {
+            const localProduct: Product = {
+              id: id,
+              image: (attributes as any).image,
+              description: (attributes as any).design || `${attributes.color} ${(attributes as any).type || 'Item'}`,
+              type: (attributes as any).type || 'Clothing',
+              color: attributes.color,
+              graphic: (attributes as any).category || 'Local',
+              variant: attributes.store,
+              stock: attributes.inStock,
+              price: `$${attributes.price}`,
+              created_at: new Date().toISOString(),
+              stock_status: attributes.inStock > 0 ? 'in_stock' : 'out_of_stock'
+            }
+            localProducts.push(localProduct)
+          }
+        })
+        
+        console.log(`Created ${localProducts.length} local products`)
+        console.log('Starting to fetch products from API...')
         
         // Now fetch products from API
         const response = await fetch('https://backend-879168005744.us-west1.run.app/products')
@@ -231,8 +255,12 @@ export default function SwipePage() {
           setLoadingProgress(Math.min(progress, 100))
         }
         
-        console.log(`Successfully loaded ${productsWithImages.length} products with images`)
-        setAllProducts(productsWithImages)
+        console.log(`Successfully loaded ${productsWithImages.length} API products with images`)
+        
+        // Combine local products with API products
+        const allCombinedProducts = [...localProducts, ...productsWithImages]
+        console.log(`Total products (local + API): ${allCombinedProducts.length}`)
+        setAllProducts(allCombinedProducts)
         setLoadingProgress(100)
 
       } catch (error) {
@@ -311,6 +339,33 @@ export default function SwipePage() {
     if (direction === "right") {
       setLikedProducts(prev => new Set([...prev, currentProduct.id]))
     }
+    setCurrentProduct(getRandomProduct())
+  }
+
+  const handleAddToCloset = () => {
+    if (!currentProduct) return
+
+    const closetItem = {
+      id: currentProduct.id,
+      name: currentProduct.description,
+      type: currentProduct.type,
+      color: currentProduct.color,
+      image: currentProduct.image,
+      price: currentProduct.price,
+      description: currentProduct.description
+    }
+
+    // Get existing closet items
+    const existingItems = localStorage.getItem('closetItems')
+    let closetItems = existingItems ? JSON.parse(existingItems) : []
+
+    // Check if item already exists
+    if (!closetItems.some((item: any) => item.id === currentProduct.id)) {
+      closetItems.push(closetItem)
+      localStorage.setItem('closetItems', JSON.stringify(closetItems))
+    }
+    
+    // Move to next product regardless
     setCurrentProduct(getRandomProduct())
   }
   
@@ -715,41 +770,64 @@ export default function SwipePage() {
 
         {/* Action Buttons - Moved outside the card */}
         <div className="flex justify-center gap-4 mt-6">
-          <button
-            onClick={() => handleSwipe("left")}
-            className="w-14 h-14 rounded-full bg-gradient-to-r from-red-500 to-pink-500 flex items-center justify-center animate-pulse-glow"
-            aria-label="Pass"
-          >
-            <X className="text-white" size={24} />
-          </button>
+          <div className="flex flex-col items-center">
+            <button
+              onClick={() => handleSwipe("left")}
+              className="w-14 h-14 rounded-full bg-gradient-to-r from-red-500 to-pink-500 flex items-center justify-center animate-pulse-glow"
+              aria-label="Pass"
+            >
+              <X className="text-white" size={24} />
+            </button>
+            <span className="text-xs text-gray-400 mt-1">Pass</span>
+          </div>
 
-          <button
-            onClick={() => handleSwipe("right")}
-            className="w-14 h-14 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center animate-pulse-glow"
-            aria-label="Like"
-          >
-            <Heart className="text-white" size={24} />
-          </button>
+          <div className="flex flex-col items-center">
+            <button
+              onClick={() => handleSwipe("right")}
+              className="w-14 h-14 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center animate-pulse-glow"
+              aria-label="Like"
+            >
+              <Heart className="text-white" size={24} />
+            </button>
+            <span className="text-xs text-gray-400 mt-1">Like</span>
+          </div>
 
-          <button
-            onClick={() => {
-              if (currentProduct) {
-                window.location.href = `/try-on/${currentProduct.id}`
-              }
-            }}
-            className="w-14 h-14 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 flex items-center justify-center animate-pulse-glow"
-            aria-label="Try on"
-          >
-            <Shirt className="text-white" size={24} />
-          </button>
+          <div className="flex flex-col items-center">
+            <button
+              onClick={handleAddToCloset}
+              className="w-14 h-14 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500 flex items-center justify-center animate-pulse-glow"
+              aria-label="Add to Closet"
+            >
+              <Plus className="text-white" size={24} />
+            </button>
+            <span className="text-xs text-gray-400 mt-1">Add to Closet</span>
+          </div>
 
-          <button
-            onClick={() => setShowFilters(true)}
-            className="w-14 h-14 rounded-full bg-gradient-to-r from-yellow-500 to-orange-500 flex items-center justify-center animate-pulse-glow"
-            aria-label="Filters"
-          >
-            <Filter className="text-white" size={24} />
-          </button>
+          <div className="flex flex-col items-center">
+            <button
+              onClick={() => {
+                if (currentProduct) {
+                  window.location.href = `/try-on/${currentProduct.id}`
+                }
+              }}
+              className="w-14 h-14 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 flex items-center justify-center animate-pulse-glow"
+              aria-label="Try on"
+            >
+              <Shirt className="text-white" size={24} />
+            </button>
+            <span className="text-xs text-gray-400 mt-1">Try On</span>
+          </div>
+
+          <div className="flex flex-col items-center">
+            <button
+              onClick={() => setShowFilters(true)}
+              className="w-14 h-14 rounded-full bg-gradient-to-r from-yellow-500 to-orange-500 flex items-center justify-center animate-pulse-glow"
+              aria-label="Filters"
+            >
+              <Filter className="text-white" size={24} />
+            </button>
+            <span className="text-xs text-gray-400 mt-1">Filters</span>
+          </div>
         </div>
 
         {/* Liked Products Counter */}

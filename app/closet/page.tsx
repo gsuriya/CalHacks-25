@@ -1,50 +1,34 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Search, Filter, Camera } from "lucide-react"
 import AnimatedBackground from "../components/AnimatedBackground"
 
 interface ClosetItem {
-  id: number
+  id: string
   name: string
-  brand: string
   type: string
   color: string
   image: string
-  tags: string[]
+  price: string
+  description: string
 }
 
-const closetItems: ClosetItem[] = [
-  {
-    id: 1,
-    name: "Oversized Blazer",
-    brand: "Zara",
-    type: "Outerwear",
-    color: "#8B4513",
-    image: "/placeholder.svg?height=200&width=200",
-    tags: ["Work", "Casual"],
-  },
-  {
-    id: 2,
-    name: "High-Waist Jeans",
-    brand: "H&M",
-    type: "Bottoms",
-    color: "#4169E1",
-    image: "/placeholder.svg?height=200&width=200",
-    tags: ["Casual", "Everyday"],
-  },
-  {
-    id: 3,
-    name: "Silk Blouse",
-    brand: "COS",
-    type: "Tops",
-    color: "#FFB6C1",
-    image: "/placeholder.svg?height=200&width=200",
-    tags: ["Work", "Elegant"],
-  },
-]
-
 export default function ClosetPage() {
+  const [closetItems, setClosetItems] = useState<ClosetItem[]>([])
   const [showAddModal, setShowAddModal] = useState(false)
+
+  // Load closet items from localStorage on component mount
+  useEffect(() => {
+    const savedItems = localStorage.getItem('closetItems')
+    if (savedItems) {
+      try {
+        setClosetItems(JSON.parse(savedItems))
+      } catch (error) {
+        console.error('Error loading closet items:', error)
+        setClosetItems([])
+      }
+    }
+  }, [])
 
   return (
     <div className="min-h-screen relative pb-20">
@@ -87,36 +71,52 @@ export default function ClosetPage() {
         </div>
 
         {/* Items Grid */}
-        <div className="grid grid-cols-2 gap-4">
-          {closetItems.map((item) => (
-            <div key={item.id} className="glass-card rounded-2xl overflow-hidden">
-              <img src={item.image || "/placeholder.svg"} alt={item.name} className="w-full h-32 object-cover" />
-              <div className="p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-                  <span className="text-xs text-gray-400">{item.brand}</span>
-                </div>
-                <h3 className="font-semibold text-sm mb-1">{item.name}</h3>
-                <p className="text-xs text-gray-400 mb-3">{item.type}</p>
-
-                <div className="flex flex-wrap gap-1 mb-3">
-                  {item.tags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="px-2 py-1 bg-purple-500/20 rounded-full text-xs border border-purple-500/30"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                <button className="w-full bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg text-sm transition-all duration-300">
-                  Add to Outfit
-                </button>
-              </div>
+        {closetItems.length === 0 ? (
+          <div className="glass-card rounded-3xl p-8 text-center">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 flex items-center justify-center mx-auto mb-4">
+              <Camera className="text-purple-400" size={32} />
             </div>
-          ))}
-        </div>
+            <h3 className="text-xl font-bold text-white mb-2">Your Closet is Empty</h3>
+            <p className="text-gray-300 mb-4">Start building your wardrobe by adding items from the swipe page!</p>
+            <button
+              onClick={() => window.location.href = '/swipe'}
+              className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-300"
+            >
+              Discover Clothes
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-4">
+            {closetItems.map((item) => (
+              <div key={item.id} className="glass-card rounded-2xl overflow-hidden">
+                <div className="relative aspect-square">
+                  <img 
+                    src={item.image || "/placeholder.svg"} 
+                    alt={item.name} 
+                    className="w-full h-full object-contain bg-white/5" 
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "/placeholder.svg"
+                    }}
+                  />
+                </div>
+                <div className="p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="px-2 py-1 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full text-xs border border-purple-500/30">
+                      {item.color}
+                    </span>
+                    <span className="text-xs text-gray-400 font-semibold">{item.price}</span>
+                  </div>
+                  <h3 className="font-semibold text-sm mb-1 line-clamp-1">{item.type}</h3>
+                  <p className="text-xs text-gray-300 mb-3 line-clamp-2">{item.description}</p>
+
+                  <button className="w-full bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg text-sm transition-all duration-300">
+                    Add to Outfit
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Add Item Modal */}
