@@ -5,7 +5,18 @@ import AnimatedBackground from "./components/AnimatedBackground"
 import VapiVoiceWidget from "../components/VapiVoiceWidget"
 import TranscriptBox from "../components/TranscriptBox"
 import { analyzeAndStoreSkinTone } from "../lib/skin-tone-storage"
-import { FilterResponse } from "../lib/gemini-api"
+
+interface VoiceFilters {
+  color: string | null
+  type: string | null
+  priceMin: number | null
+  priceMax: number | null
+  store: string | null
+  inStockMin: number | null
+  material: string | null
+  occasion: string | null
+  season: string | null
+}
 
 export default function HomePage() {
   const [micEnabled, setMicEnabled] = useState(false)
@@ -25,7 +36,7 @@ export default function HomePage() {
   const [analysisMessage, setAnalysisMessage] = useState<string | null>(null)
   
   // Filter extraction state
-  const [extractedFilters, setExtractedFilters] = useState<FilterResponse | null>(null)
+  const [extractedFilters, setExtractedFilters] = useState<VoiceFilters | null>(null)
   
   const videoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
@@ -173,14 +184,19 @@ export default function HomePage() {
 
   // Handle filter extraction and navigation
   useEffect(() => {
-    if (extractedFilters && Object.keys(extractedFilters).length > 0) {
-      console.log('Voice filters extracted, navigating to swipe page:', extractedFilters)
+    if (extractedFilters && Object.keys(extractedFilters).some(key => extractedFilters[key as keyof VoiceFilters] !== null)) {
+      console.log('🏠 HomePage: Voice filters extracted, navigating to swipe page:', extractedFilters)
       
-      // Store filters in localStorage for swipe page
-      localStorage.setItem('voiceExtractedFilters', JSON.stringify(extractedFilters))
+      // Store filters in localStorage for swipe page using our new format
+      localStorage.setItem('activeFilters', JSON.stringify(extractedFilters))
       
       // Show feedback message
-      setAnalysisMessage("Filters applied! Navigating to products...")
+      const setFilters = Object.entries(extractedFilters)
+        .filter(([_, v]) => v !== null)
+        .map(([k, v]) => `${k}: ${v}`)
+        .join(', ')
+      
+      setAnalysisMessage(`Filters applied: ${setFilters}! Navigating...`)
       
       // Navigate to swipe page after a short delay
       setTimeout(() => {

@@ -3,7 +3,19 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Vapi from '@vapi-ai/web';
 import { VAPI_CONFIG } from '../lib/vapi-config';
-import { parseVoiceToFilters, FilterResponse } from '../lib/gemini-api';
+import { handleFilterRequest } from '../src/voice/handleFilterRequest';
+
+interface VoiceFilters {
+  color: string | null
+  type: string | null
+  priceMin: number | null
+  priceMax: number | null
+  store: string | null
+  inStockMin: number | null
+  material: string | null
+  occasion: string | null
+  season: string | null
+}
 
 interface VapiVoiceWidgetProps {
   apiKey?: string;
@@ -12,7 +24,7 @@ interface VapiVoiceWidgetProps {
   onTranscriptUpdate?: (transcript: Array<{role: string, text: string}>) => void;
   onConnectionChange?: (isConnected: boolean) => void;
   onSpeakingChange?: (isSpeaking: boolean) => void;
-  onFiltersExtracted?: (filters: FilterResponse) => void; // New prop for filter callback
+  onFiltersExtracted?: (filters: VoiceFilters) => void; // Updated to use VoiceFilters
 }
 
 const VapiVoiceWidget: React.FC<VapiVoiceWidgetProps> = ({ 
@@ -72,16 +84,19 @@ const VapiVoiceWidget: React.FC<VapiVoiceWidgetProps> = ({
     }
   }, [onTranscriptUpdate]);
 
-  // Filter extraction handler
+  // Filter extraction handler using our new voice agent
   const handleFilterExtraction = useCallback(async () => {
     if (!filterTranscript.trim() || !onFiltersExtracted) return;
     
     try {
-      console.log('Extracting filters from transcript:', filterTranscript);
-      const filters = await parseVoiceToFilters(filterTranscript);
-      console.log('Extracted filters:', filters);
+      console.log('🎤 VapiVoiceWidget: Extracting filters from transcript:', filterTranscript);
       
-      if (Object.keys(filters).length > 0) {
+      // Use our new voice agent
+      const filters = await handleFilterRequest([filterTranscript]);
+      
+      console.log('🎤 VapiVoiceWidget: Extracted filters:', filters);
+      
+      if (filters && Object.keys(filters).some(key => filters[key as keyof VoiceFilters] !== null)) {
         onFiltersExtracted(filters);
       }
       
@@ -89,7 +104,7 @@ const VapiVoiceWidget: React.FC<VapiVoiceWidgetProps> = ({
       setFilterModeActive(false);
       setFilterTranscript('');
     } catch (error) {
-      console.error('Filter extraction failed:', error);
+      console.error('🎤 VapiVoiceWidget: Filter extraction failed:', error);
       setFilterModeActive(false);
       setFilterTranscript('');
     }
@@ -109,32 +124,21 @@ const VapiVoiceWidget: React.FC<VapiVoiceWidgetProps> = ({
         if (message.role === 'user') {
           const text = message.text.toLowerCase();
           
-          // Check for either "filter" or "recommend" trigger words
-          let triggerWord = '';
-          let triggerIndex = -1;
+          // Check for clothing requests - broader detection
+          const hasClothingRequest = text.includes('pants') || text.includes('shirt') || text.includes('sweater') || 
+                                   text.includes('jeans') || text.includes('trousers') || text.includes('scarf') ||
+                                   text.includes('recommend') || text.includes('filter') || text.includes('show me') ||
+                                   text.includes('find me') || text.includes('looking for') || text.includes('want');
           
-          if (text.includes('filter')) {
-            triggerWord = 'filter';
-            triggerIndex = text.indexOf('filter');
-          } else if (text.includes('recommend')) {
-            triggerWord = 'recommend';
-            triggerIndex = text.indexOf('recommend');
-          }
-          
-          if (triggerWord && triggerIndex !== -1) {
-            console.log(`${triggerWord} keyword detected, activating filter mode`);
+          if (hasClothingRequest) {
+            console.log('🎤 VapiVoiceWidget: Clothing request detected, activating filter mode');
             setFilterModeActive(true);
-            setFilterTranscript('');
-            
-            // Start accumulating from the word after the trigger word
-            const afterTrigger = message.text.substring(triggerIndex + triggerWord.length).trim();
-            if (afterTrigger) {
-              setFilterTranscript(afterTrigger);
-            }
+            setFilterTranscript(message.text); // Use full message text
+            console.log('🎤 VapiVoiceWidget: Set filter transcript to:', message.text);
           } else if (filterModeActive) {
             // Accumulate transcript when in filter mode
             setFilterTranscript(prev => prev + ' ' + message.text);
-            console.log('Accumulating filter transcript:', filterTranscript + ' ' + message.text);
+            console.log('🎤 VapiVoiceWidget: Accumulating filter transcript:', filterTranscript + ' ' + message.text);
           }
         }
       }
@@ -144,7 +148,7 @@ const VapiVoiceWidget: React.FC<VapiVoiceWidgetProps> = ({
   // Handle filter extraction when microphone stops
   useEffect(() => {
     if (!isEnabled && filterModeActive && filterTranscript.trim()) {
-      console.log('Microphone stopped, processing filter transcript');
+      console.log('🎤 VapiVoiceWidget: Microphone stopped, processing filter transcript');
       handleFilterExtraction();
     }
   }, [isEnabled, filterModeActive, filterTranscript, handleFilterExtraction]);

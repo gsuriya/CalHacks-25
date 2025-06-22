@@ -104,6 +104,129 @@ export default function SwipePage() {
 
   // Check for voice-extracted filters and apply them
   useEffect(() => {
+    const handleVoiceFilters = () => {
+      const voiceFilters = localStorage.getItem('activeFilters')
+      console.log('🔍 Checking localStorage for activeFilters:', voiceFilters)
+      
+      if (voiceFilters && filterOptions && activeFilters) {
+        try {
+          const parsedFilters = JSON.parse(voiceFilters)
+          console.log('📋 Raw voice filters from localStorage:', JSON.stringify(parsedFilters, null, 2))
+          
+          // Convert single-value voice filters to array format for UI
+          const mergedFilters = {
+            ...activeFilters,
+            // Convert single values to arrays, preserving existing arrays if no new value
+            colors: parsedFilters.color ? [parsedFilters.color] : activeFilters.colors,
+            type: parsedFilters.type ? [parsedFilters.type] : activeFilters.type,
+            stores: parsedFilters.store ? [parsedFilters.store] : activeFilters.stores,
+            materials: parsedFilters.material ? [parsedFilters.material] : activeFilters.materials,
+            occasions: parsedFilters.occasion ? [parsedFilters.occasion] : activeFilters.occasions,
+            seasons: parsedFilters.season ? [parsedFilters.season] : activeFilters.seasons,
+            // Handle numeric and boolean fields
+            priceMin: parsedFilters.priceMin !== null ? parsedFilters.priceMin : activeFilters.priceMin,
+            priceMax: parsedFilters.priceMax !== null ? parsedFilters.priceMax : activeFilters.priceMax,
+            inStock: parsedFilters.inStockMin !== null ? parsedFilters.inStockMin > 0 : activeFilters.inStock,
+          }
+          
+          console.log('🔄 Filter conversion:')
+          console.log('  - color:', parsedFilters.color, '→ colors:', mergedFilters.colors)
+          console.log('  - type:', parsedFilters.type, '→ type:', mergedFilters.type)
+          console.log('  - store:', parsedFilters.store, '→ stores:', mergedFilters.stores)
+          
+          console.log('🔍 Detailed conversion check:')
+          console.log('  - parsedFilters.type value:', parsedFilters.type)
+          console.log('  - parsedFilters.type type:', typeof parsedFilters.type)
+          console.log('  - parsedFilters.type === null:', parsedFilters.type === null)
+          console.log('  - Boolean check result:', parsedFilters.type ? [parsedFilters.type] : activeFilters.type)
+          
+          console.log('📊 Final merged filters:', JSON.stringify(mergedFilters, null, 2))
+          
+          setActiveFilters(mergedFilters)
+          console.log('✅ setActiveFilters called with merged filters')
+          
+          // Clear the stored filters
+          localStorage.removeItem('activeFilters')
+          console.log('🗑️ Cleared activeFilters from localStorage')
+        } catch (error) {
+          console.error('❌ Failed to apply voice filters:', error)
+          localStorage.removeItem('activeFilters') // Clear invalid data
+        }
+      } else {
+        console.log('⏭️ Skipping voice filter application:', {
+          hasVoiceFilters: !!voiceFilters,
+          hasFilterOptions: !!filterOptions,
+          hasActiveFilters: !!activeFilters
+        })
+      }
+    }
+
+    // Listen for voice filter events
+    const handleVoiceFilterEvent = (event: CustomEvent) => {
+      console.log('🎧 Voice filter event received:', event.detail)
+      
+      if (event.detail.filters) {
+        const voiceFilters = event.detail.filters
+        console.log('🎧 Voice filters from event:', JSON.stringify(voiceFilters, null, 2))
+        console.log('🎧 Individual filter values from event:')
+        console.log('  - color:', voiceFilters.color, '(type:', typeof voiceFilters.color, ')')
+        console.log('  - type:', voiceFilters.type, '(type:', typeof voiceFilters.type, ')')
+        console.log('  - store:', voiceFilters.store, '(type:', typeof voiceFilters.store, ')')
+        
+        // Update active filters directly from event data
+        setActiveFilters(prev => {
+          if (!prev) {
+            console.log('🎧 No previous filters, skipping update')
+            return prev
+          }
+          
+          console.log('🎧 Previous filters:', JSON.stringify(prev, null, 2))
+          
+          const newFilters = {
+            ...prev,
+            colors: voiceFilters.color ? [voiceFilters.color] : prev.colors,
+            type: voiceFilters.type ? [voiceFilters.type] : prev.type,
+            stores: voiceFilters.store ? [voiceFilters.store] : prev.stores,
+            materials: voiceFilters.material ? [voiceFilters.material] : prev.materials,
+            occasions: voiceFilters.occasion ? [voiceFilters.occasion] : prev.occasions,
+            seasons: voiceFilters.season ? [voiceFilters.season] : prev.seasons,
+            priceMin: voiceFilters.priceMin !== null ? voiceFilters.priceMin : prev.priceMin,
+            priceMax: voiceFilters.priceMax !== null ? voiceFilters.priceMax : prev.priceMax,
+            inStock: voiceFilters.inStockMin !== null ? voiceFilters.inStockMin > 0 : prev.inStock,
+          }
+          
+          console.log('🎧 New filters after conversion:', JSON.stringify(newFilters, null, 2))
+          console.log('🎧 Filter changes:')
+          console.log('  - colors:', prev.colors, '→', newFilters.colors)
+          console.log('  - type:', prev.type, '→', newFilters.type)
+          console.log('  - stores:', prev.stores, '→', newFilters.stores)
+          
+          return newFilters
+        })
+      }
+      
+      // Check if this is an enhanced event with skin tone data
+      const { enableSkinToneMatching: enableMatching, skinTone } = event.detail
+      if (enableMatching && skinTone) {
+        setSkinToneAnalysis(skinTone)
+        setSkinToneMatching(true)
+      }
+    }
+
+    // Add event listeners
+    window.addEventListener('voiceFilterUpdate', handleVoiceFilterEvent as EventListener)
+
+    // Initial check for filters
+    handleVoiceFilters()
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('voiceFilterUpdate', handleVoiceFilterEvent as EventListener)
+    }
+  }, [filterOptions, activeFilters])
+
+  // Check for old voice-extracted filters and apply them
+  useEffect(() => {
     const voiceFilters = localStorage.getItem('voiceExtractedFilters')
     if (voiceFilters && filterOptions && activeFilters) {
       try {
@@ -283,9 +406,19 @@ export default function SwipePage() {
 
   // Effect to apply filters when they change
   useEffect(() => {
-    if (!filterSystemReady || allProducts.length === 0) return
+    console.log('🔍 Filter application effect triggered:', {
+      filterSystemReady,
+      allProductsLength: allProducts.length,
+      hasActiveFilters: !!activeFilters
+    })
+    
+    if (!filterSystemReady || allProducts.length === 0) {
+      console.log('⏭️ Skipping filter application - system not ready')
+      return
+    }
 
     let productsToFilter = [...allProducts]
+    console.log('📦 Starting with', productsToFilter.length, 'products')
 
     // Apply skin tone matching first if enabled
     if (skinToneMatching && skinToneAnalysis) {
@@ -293,32 +426,64 @@ export default function SwipePage() {
         const productColorHex = getProductColorHex(product.color)
         return isColorMatch(productColorHex, skinToneAnalysis)
       })
+      console.log('🎨 After skin tone matching:', productsToFilter.length, 'products')
     }
 
     // Apply active filters using the static filter map
     if (activeFilters) {
+      console.log('🔧 Applying active filters:', {
+        colors: activeFilters.colors,
+        type: activeFilters.type,
+        stores: activeFilters.stores,
+        materials: activeFilters.materials,
+        occasions: activeFilters.occasions,
+        seasons: activeFilters.seasons
+      })
+      
       const filtered = productsToFilter.filter(product => {
         const attributes = productFiltersMap[product.id]
-        if (!attributes) return false
+        if (!attributes) {
+          console.log('❌ No attributes found for product', product.id)
+          return false
+        }
         
         const { colors, stores, type, materials, occasions, seasons, priceMin, priceMax, inStock } = activeFilters
         
         // Type assertions for attributes since we know the structure
         const typedAttributes = attributes as ProductFilterAttributes
         
-        if (colors.length > 0 && !colors.includes(typedAttributes.color)) return false
-        if (stores.length > 0 && !stores.includes(typedAttributes.store)) return false
-        if (type.length > 0 && !type.includes(typedAttributes.type)) return false
-        if (materials.length > 0 && !materials.includes(typedAttributes.material)) return false
-        if (occasions.length > 0 && !occasions.includes(typedAttributes.occasion)) return false
-        if (seasons.length > 0 && !seasons.includes(typedAttributes.season)) return false
-        if (typedAttributes.price < priceMin || typedAttributes.price > priceMax) return false
-        if (inStock && typedAttributes.inStock === 0) return false
+        // Check each filter
+        const colorMatch = colors.length === 0 || colors.includes(typedAttributes.color)
+        const storeMatch = stores.length === 0 || stores.includes(typedAttributes.store)
+        const typeMatch = type.length === 0 || type.includes(typedAttributes.type)
+        const materialMatch = materials.length === 0 || materials.includes(typedAttributes.material)
+        const occasionMatch = occasions.length === 0 || occasions.includes(typedAttributes.occasion)
+        const seasonMatch = seasons.length === 0 || seasons.includes(typedAttributes.season)
+        const priceMatch = typedAttributes.price >= priceMin && typedAttributes.price <= priceMax
+        const stockMatch = !inStock || typedAttributes.inStock > 0
         
-        return true
+        const passes = colorMatch && storeMatch && typeMatch && materialMatch && occasionMatch && seasonMatch && priceMatch && stockMatch
+        
+        if (!passes) {
+          console.log(`🚫 Product ${product.id} filtered out:`, {
+            color: `${typedAttributes.color} ${colorMatch ? '✅' : '❌'}`,
+            store: `${typedAttributes.store} ${storeMatch ? '✅' : '❌'}`,
+            type: `${typedAttributes.type} ${typeMatch ? '✅' : '❌'}`,
+            material: `${typedAttributes.material} ${materialMatch ? '✅' : '❌'}`,
+            occasion: `${typedAttributes.occasion} ${occasionMatch ? '✅' : '❌'}`,
+            season: `${typedAttributes.season} ${seasonMatch ? '✅' : '❌'}`,
+            price: `${typedAttributes.price} ${priceMatch ? '✅' : '❌'}`,
+            stock: `${typedAttributes.inStock} ${stockMatch ? '✅' : '❌'}`
+          })
+        }
+        
+        return passes
       })
+      
+      console.log('✅ After applying filters:', filtered.length, 'products remain')
       setFilteredProducts(filtered)
     } else {
+      console.log('⏭️ No active filters, using all products')
       setFilteredProducts(productsToFilter)
     }
   }, [activeFilters, skinToneMatching, skinToneAnalysis, allProducts, filterSystemReady, productFiltersMap])
@@ -336,6 +501,19 @@ export default function SwipePage() {
     }
   }, [filteredProducts, currentProduct])
 
+  // Track activeFilters changes
+  useEffect(() => {
+    console.log('🎛️ ActiveFilters state changed:', JSON.stringify(activeFilters, null, 2))
+    if (activeFilters) {
+      console.log('🎛️ Active filter summary:')
+      console.log('  - colors:', activeFilters.colors)
+      console.log('  - type:', activeFilters.type)
+      console.log('  - stores:', activeFilters.stores)
+      console.log('  - materials:', activeFilters.materials)
+      console.log('  - occasions:', activeFilters.occasions)
+      console.log('  - seasons:', activeFilters.seasons)
+    }
+  }, [activeFilters])
 
   const getRandomProduct = (productList: Product[] = filteredProducts) => {
     if (productList.length === 0) return null
@@ -388,7 +566,7 @@ export default function SwipePage() {
     
     let newFilters = { ...activeFilters }
 
-    if (filterType === 'colors' || filterType === 'stores' || filterType === 'materials' || filterType === 'occasions' || filterType === 'seasons') {
+    if (filterType === 'colors' || filterType === 'stores' || filterType === 'type' || filterType === 'materials' || filterType === 'occasions' || filterType === 'seasons') {
       const currentValues = newFilters[filterType] as string[]
       const newValues = currentValues.includes(value)
         ? currentValues.filter(v => v !== value)
