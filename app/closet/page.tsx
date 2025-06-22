@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect } from "react"
-import { Search, Filter, Camera } from "lucide-react"
+import { Search, Filter, Camera, Shirt, Check } from "lucide-react"
 import AnimatedBackground from "../components/AnimatedBackground"
 
 interface ClosetItem {
@@ -16,6 +16,8 @@ interface ClosetItem {
 export default function ClosetPage() {
   const [closetItems, setClosetItems] = useState<ClosetItem[]>([])
   const [showAddModal, setShowAddModal] = useState(false)
+  const [selectionMode, setSelectionMode] = useState(false)
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set())
 
   // Load closet items from localStorage on component mount
   useEffect(() => {
@@ -30,6 +32,32 @@ export default function ClosetPage() {
     }
   }, [])
 
+  const toggleItemSelection = (itemId: string) => {
+    setSelectedItems(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(itemId)) {
+        newSet.delete(itemId)
+      } else if (newSet.size < 2) {
+        // Limit to 2 items maximum
+        newSet.add(itemId)
+      }
+      return newSet
+    })
+  }
+
+  const startMixAndMatch = () => {
+    if (selectedItems.size === 0) return
+    
+    const selectedItemIds = Array.from(selectedItems)
+    const queryParams = selectedItemIds.map(id => `item=${id}`).join('&')
+    window.location.href = `/try-on/multi?${queryParams}`
+  }
+
+  const exitSelectionMode = () => {
+    setSelectionMode(false)
+    setSelectedItems(new Set())
+  }
+
   return (
     <div className="min-h-screen relative pb-20">
       <AnimatedBackground />
@@ -39,7 +67,14 @@ export default function ClosetPage() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold gradient-text">My Closet</h1>
-            <p className="text-gray-400">{closetItems.length} items</p>
+            <p className="text-gray-400">
+              {closetItems.length} items
+              {selectionMode && (
+                <span className="ml-2 text-purple-400">
+                  • {selectedItems.size}/2 selected
+                </span>
+              )}
+            </p>
           </div>
           <div className="flex gap-2">
             <button className="w-10 h-10 rounded-full glass-card flex items-center justify-center">
@@ -50,6 +85,55 @@ export default function ClosetPage() {
             </button>
           </div>
         </div>
+
+        {/* Mix & Match Section */}
+        {closetItems.length > 0 && (
+          <div className="glass-card rounded-3xl p-6 mb-6">
+            <div className="flex items-center gap-4">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-teal-500/20 to-cyan-500/20 border-2 border-dashed border-teal-400 flex items-center justify-center">
+                <Shirt className="text-teal-400" size={24} />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold mb-1">Mix & Match Try-On</h3>
+                <p className="text-gray-400 text-sm">
+                  {selectionMode 
+                    ? "Select up to 2 items to try on together"
+                    : "Try on multiple garments at once"
+                  }
+                </p>
+              </div>
+            </div>
+            
+            {selectionMode ? (
+              <div className="flex gap-3 mt-4">
+                <button
+                  onClick={exitSelectionMode}
+                  className="flex-1 bg-white/10 text-white py-3 rounded-xl font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={startMixAndMatch}
+                  disabled={selectedItems.size === 0}
+                  className={`flex-1 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                    selectedItems.size > 0
+                      ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white animate-pulse-glow'
+                      : 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                  }`}
+                >
+                  Try On {selectedItems.size > 0 ? `(${selectedItems.size})` : ''}
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setSelectionMode(true)}
+                className="w-full mt-4 bg-gradient-to-r from-teal-500 to-cyan-500 text-white py-3 rounded-xl font-semibold animate-pulse-glow"
+              >
+                Start Mix & Match
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Add Item Section */}
         <div className="glass-card rounded-3xl p-6 mb-6">
@@ -88,7 +172,15 @@ export default function ClosetPage() {
         ) : (
           <div className="grid grid-cols-2 gap-4">
             {closetItems.map((item) => (
-              <div key={item.id} className="glass-card rounded-2xl overflow-hidden">
+              <div 
+                key={item.id} 
+                className={`glass-card rounded-2xl overflow-hidden transition-all duration-300 ${
+                  selectionMode ? 'cursor-pointer hover:scale-105' : ''
+                } ${
+                  selectedItems.has(item.id) ? 'ring-2 ring-teal-400 bg-teal-500/10' : ''
+                }`}
+                onClick={selectionMode ? () => toggleItemSelection(item.id) : undefined}
+              >
                 <div className="relative aspect-square">
                   <img 
                     src={item.image || "/placeholder.svg"} 
@@ -98,6 +190,19 @@ export default function ClosetPage() {
                       (e.target as HTMLImageElement).src = "/placeholder.svg"
                     }}
                   />
+                  
+                  {/* Selection indicator */}
+                  {selectionMode && (
+                    <div className={`absolute top-2 right-2 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
+                      selectedItems.has(item.id)
+                        ? 'bg-teal-400 border-teal-400'
+                        : 'bg-black/50 border-white/50'
+                    }`}>
+                      {selectedItems.has(item.id) && (
+                        <Check className="text-white" size={14} />
+                      )}
+                    </div>
+                  )}
                 </div>
                 <div className="p-4">
                   <div className="flex items-center gap-2 mb-2">
@@ -109,9 +214,14 @@ export default function ClosetPage() {
                   <h3 className="font-semibold text-sm mb-1 line-clamp-1">{item.type}</h3>
                   <p className="text-xs text-gray-300 mb-3 line-clamp-2">{item.description}</p>
 
-                  <button className="w-full bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg text-sm transition-all duration-300">
-                    Add to Outfit
-                  </button>
+                  {!selectionMode && (
+                    <button 
+                      onClick={() => window.location.href = `/try-on/${item.id}`}
+                      className="w-full bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg text-sm transition-all duration-300"
+                    >
+                      Try On Solo
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
