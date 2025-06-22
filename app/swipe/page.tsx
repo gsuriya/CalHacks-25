@@ -41,6 +41,7 @@ interface ProductFilterAttributes {
   material: string
   occasion: string
   season: string
+  type: string
 }
 
 // Data structure for the filter options UI
@@ -51,6 +52,7 @@ interface FilterOptions {
   occasions: string[]
   seasons: string[]
   priceRange: { min: number; max: number }
+  type: string[]
 }
 
 // Data structure for the active filter state
@@ -63,6 +65,7 @@ interface ActiveFilters {
   priceMin: number
   priceMax: number
   inStock: boolean
+  type: string[]
 }
 
 export default function SwipePage() {
@@ -113,6 +116,7 @@ export default function SwipePage() {
           // Apply voice filters, keeping existing defaults for missing fields
           colors: parsedFilters.colors || activeFilters.colors,
           stores: parsedFilters.stores || activeFilters.stores,
+          type: parsedFilters.type || activeFilters.type,
           materials: parsedFilters.materials || activeFilters.materials,
           occasions: parsedFilters.occasions || activeFilters.occasions,
           seasons: parsedFilters.seasons || activeFilters.seasons,
@@ -155,23 +159,26 @@ export default function SwipePage() {
           throw new Error('Failed to load filter data files')
         }
         
-        const filtersMapData = await filtersMapResponse.json()
-        const filterOptionsData = await filterOptionsResponse.json()
+        const filtersMapData: Record<string, ProductFilterAttributes> = await filtersMapResponse.json()
+        const filterOptionsData: FilterOptions = await filterOptionsResponse.json()
         
         setProductFiltersMap(filtersMapData)
         setFilterOptions(filterOptionsData)
         
-        // Set initial active filters
-        setActiveFilters({
-          colors: [],
-          stores: [],
-          materials: [],
-          occasions: [],
-          seasons: [],
+        // Set initial active filters with all required fields
+        const initialFilters: ActiveFilters = {
+          colors: [] as string[],
+          stores: [] as string[],
+          materials: [] as string[],
+          occasions: [] as string[],
+          seasons: [] as string[],
+          type: [] as string[],
           priceMin: filterOptionsData.priceRange.min,
           priceMax: filterOptionsData.priceRange.max,
           inStock: true,
-        })
+        }
+        
+        setActiveFilters(initialFilters)
         
         setFilterSystemReady(true)
         setLoadingProgress(20)
@@ -294,15 +301,19 @@ export default function SwipePage() {
         const attributes = productFiltersMap[product.id]
         if (!attributes) return false
         
-        const { colors, stores, materials, occasions, seasons, priceMin, priceMax, inStock } = activeFilters
+        const { colors, stores, type, materials, occasions, seasons, priceMin, priceMax, inStock } = activeFilters
         
-        if (colors.length > 0 && !colors.includes(attributes.color)) return false
-        if (stores.length > 0 && !stores.includes(attributes.store)) return false
-        if (materials.length > 0 && !materials.includes(attributes.material)) return false
-        if (occasions.length > 0 && !occasions.includes(attributes.occasion)) return false
-        if (seasons.length > 0 && !seasons.includes(attributes.season)) return false
-        if (attributes.price < priceMin || attributes.price > priceMax) return false
-        if (inStock && attributes.inStock === 0) return false
+        // Type assertions for attributes since we know the structure
+        const typedAttributes = attributes as ProductFilterAttributes
+        
+        if (colors.length > 0 && !colors.includes(typedAttributes.color)) return false
+        if (stores.length > 0 && !stores.includes(typedAttributes.store)) return false
+        if (type.length > 0 && !type.includes(typedAttributes.type)) return false
+        if (materials.length > 0 && !materials.includes(typedAttributes.material)) return false
+        if (occasions.length > 0 && !occasions.includes(typedAttributes.occasion)) return false
+        if (seasons.length > 0 && !seasons.includes(typedAttributes.season)) return false
+        if (typedAttributes.price < priceMin || typedAttributes.price > priceMax) return false
+        if (inStock && typedAttributes.inStock === 0) return false
         
         return true
       })
@@ -310,7 +321,6 @@ export default function SwipePage() {
     } else {
       setFilteredProducts(productsToFilter)
     }
-
   }, [activeFilters, skinToneMatching, skinToneAnalysis, allProducts, filterSystemReady, productFiltersMap])
 
   // Effect to set the initial/next product when filtered list changes
@@ -642,6 +652,7 @@ export default function SwipePage() {
                     materials: [],
                     occasions: [],
                     seasons: [],
+                    type: [],
                     priceMin: filterOptions.priceRange.min,
                     priceMax: filterOptions.priceRange.max,
                     inStock: true,
@@ -979,6 +990,26 @@ export default function SwipePage() {
                       }`}
                     >
                       {season}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Type */}
+              <div>
+                <h3 className="font-semibold mb-3">Type ({filterOptions.type.length})</h3>
+                <div className="flex flex-wrap gap-2">
+                  {filterOptions.type.map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => handleFilterChange('type', type)}
+                      className={`px-3 py-1.5 rounded-full text-sm transition-all duration-300 ${
+                        activeFilters.type.includes(type)
+                          ? 'bg-gradient-to-r from-indigo-500 to-blue-500 text-white'
+                          : 'bg-white/10 hover:bg-white/20'
+                      }`}
+                    >
+                      {type}
                     </button>
                   ))}
                 </div>

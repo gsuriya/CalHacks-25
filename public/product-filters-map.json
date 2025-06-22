@@ -6,7 +6,8 @@
     "inStock": 77,
     "material": "Silk",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "2": {
     "color": "Any Color",
@@ -15,7 +16,8 @@
     "inStock": 16,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "3": {
     "color": "Yellow",
@@ -24,7 +26,8 @@
     "inStock": 68,
     "material": "Organic Cotton",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "4": {
     "color": "Cream",
@@ -33,7 +36,8 @@
     "inStock": 39,
     "material": "Bamboo",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "5": {
     "color": "Burgundy",
@@ -42,7 +46,8 @@
     "inStock": 38,
     "material": "Wool",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "sweater"
   },
   "6": {
     "color": "Burgundy",
@@ -51,7 +56,8 @@
     "inStock": 18,
     "material": "Cashmere",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "sweater"
   },
   "7": {
     "color": "Cream",
@@ -60,7 +66,8 @@
     "inStock": 82,
     "material": "Organic Cotton",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "8": {
     "color": "Cream",
@@ -69,7 +76,8 @@
     "inStock": 55,
     "material": "Modal",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "long sleeve"
   },
   "9": {
     "color": "Yellow",
@@ -78,7 +86,8 @@
     "inStock": 15,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "10": {
     "color": "Black",
@@ -87,7 +96,8 @@
     "inStock": 1,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "11": {
     "color": "Gray",
@@ -96,7 +106,8 @@
     "inStock": 96,
     "material": "Organic Cotton",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "12": {
     "color": "Black",
@@ -105,7 +116,8 @@
     "inStock": 27,
     "material": "Bamboo",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "13": {
     "color": "White",
@@ -114,7 +126,8 @@
     "inStock": 87,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "14": {
     "color": "Any Color",
@@ -123,7 +136,8 @@
     "inStock": 29,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "15": {
     "color": "Blue",
@@ -132,7 +146,8 @@
     "inStock": 65,
     "material": "Cashmere",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "16": {
     "color": "White",
@@ -141,7 +156,8 @@
     "inStock": 93,
     "material": "Bamboo",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "17": {
     "color": "Black",
@@ -150,7 +166,8 @@
     "inStock": 40,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "18": {
     "color": "White",
@@ -159,7 +176,8 @@
     "inStock": 12,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "19": {
     "color": "Black",
@@ -168,7 +186,8 @@
     "inStock": 16,
     "material": "Organic Cotton",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "20": {
     "color": "Gray",
@@ -177,7 +196,8 @@
     "inStock": 68,
     "material": "Bamboo",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "21": {
     "color": "Yellow",
@@ -186,7 +206,8 @@
     "inStock": 35,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "22": {
     "color": "Blue",
@@ -195,7 +216,8 @@
     "inStock": 71,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "23": {
     "color": "Gray",
@@ -204,7 +226,8 @@
     "inStock": 20,
     "material": "Merino Wool",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "long sleeve"
   },
   "24": {
     "color": "Any Color",
@@ -213,7 +236,8 @@
     "inStock": 53,
     "material": "Cotton Blend",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "scarf"
   },
   "25": {
     "color": "Cream",
@@ -222,7 +246,8 @@
     "inStock": 64,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "26": {
     "color": "Burgundy",
@@ -231,7 +256,8 @@
     "inStock": 13,
     "material": "Cashmere",
     "occasion": "Casual",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "sweater"
   },
   "27": {
     "color": "Gray",
@@ -240,7 +266,8 @@
     "inStock": 21,
     "material": "Organic Cotton",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "28": {
     "color": "Black",
@@ -249,7 +276,8 @@
     "inStock": 59,
     "material": "Bamboo",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "29": {
     "color": "White",
@@ -258,7 +286,8 @@
     "inStock": 3,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "30": {
     "color": "Any Color",
@@ -267,7 +296,8 @@
     "inStock": 97,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "31": {
     "color": "Purple",
@@ -276,7 +306,8 @@
     "inStock": 69,
     "material": "Organic Cotton",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "32": {
     "color": "Black",
@@ -285,7 +316,8 @@
     "inStock": 49,
     "material": "Bamboo",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "33": {
     "color": "Blue",
@@ -294,7 +326,8 @@
     "inStock": 87,
     "material": "Silk",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "34": {
     "color": "White",
@@ -303,7 +336,8 @@
     "inStock": 51,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "35": {
     "color": "Navy",
@@ -312,7 +346,8 @@
     "inStock": 71,
     "material": "Merino Wool",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "long sleeve"
   },
   "36": {
     "color": "Yellow",
@@ -321,7 +356,8 @@
     "inStock": 57,
     "material": "Bamboo",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "37": {
     "color": "Blue",
@@ -330,7 +366,8 @@
     "inStock": 68,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "38": {
     "color": "Cream",
@@ -339,7 +376,8 @@
     "inStock": 27,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "long sleeve"
   },
   "39": {
     "color": "Gray",
@@ -348,7 +386,8 @@
     "inStock": 53,
     "material": "Merino Wool",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "long sleeve"
   },
   "40": {
     "color": "Cream",
@@ -357,7 +396,8 @@
     "inStock": 37,
     "material": "Bamboo",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "41": {
     "color": "Burgundy",
@@ -366,7 +406,8 @@
     "inStock": 63,
     "material": "Wool",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "sweater"
   },
   "42": {
     "color": "Any Color",
@@ -375,7 +416,8 @@
     "inStock": 39,
     "material": "Wool",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "scarf"
   },
   "43": {
     "color": "Cream",
@@ -384,7 +426,8 @@
     "inStock": 1,
     "material": "Merino Wool",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "long sleeve"
   },
   "44": {
     "color": "Navy",
@@ -393,7 +436,8 @@
     "inStock": 10,
     "material": "Modal",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "long sleeve"
   },
   "45": {
     "color": "Purple",
@@ -402,7 +446,8 @@
     "inStock": 46,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "46": {
     "color": "Any Color",
@@ -411,7 +456,8 @@
     "inStock": 64,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "47": {
     "color": "White",
@@ -420,7 +466,8 @@
     "inStock": 80,
     "material": "Organic Cotton",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "48": {
     "color": "Blue",
@@ -429,7 +476,8 @@
     "inStock": 27,
     "material": "Cotton Blend",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "scarf"
   },
   "49": {
     "color": "Purple",
@@ -438,7 +486,8 @@
     "inStock": 47,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "50": {
     "color": "Navy",
@@ -447,7 +496,8 @@
     "inStock": 5,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "long sleeve"
   },
   "51": {
     "color": "Blue",
@@ -456,7 +506,8 @@
     "inStock": 73,
     "material": "Organic Cotton",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "52": {
     "color": "Gray",
@@ -465,7 +516,8 @@
     "inStock": 16,
     "material": "Modal",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "long sleeve"
   },
   "53": {
     "color": "Any Color",
@@ -474,7 +526,8 @@
     "inStock": 93,
     "material": "Silk",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "54": {
     "color": "Any Color",
@@ -483,7 +536,8 @@
     "inStock": 54,
     "material": "Wool",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "scarf"
   },
   "55": {
     "color": "Gray",
@@ -492,7 +546,8 @@
     "inStock": 25,
     "material": "Merino Wool",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "long sleeve"
   },
   "56": {
     "color": "Cream",
@@ -501,7 +556,8 @@
     "inStock": 48,
     "material": "Modal",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "long sleeve"
   },
   "57": {
     "color": "Blue",
@@ -510,7 +566,8 @@
     "inStock": 10,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "58": {
     "color": "Black",
@@ -519,7 +576,8 @@
     "inStock": 6,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "59": {
     "color": "Gray",
@@ -528,7 +586,8 @@
     "inStock": 77,
     "material": "Organic Cotton",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "60": {
     "color": "Black",
@@ -537,7 +596,8 @@
     "inStock": 7,
     "material": "Bamboo",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "61": {
     "color": "White",
@@ -546,7 +606,8 @@
     "inStock": 8,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "62": {
     "color": "Purple",
@@ -555,7 +616,8 @@
     "inStock": 64,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "63": {
     "color": "White",
@@ -564,7 +626,8 @@
     "inStock": 28,
     "material": "Organic Cotton",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "64": {
     "color": "Black",
@@ -573,7 +636,8 @@
     "inStock": 42,
     "material": "Modal",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "long sleeve"
   },
   "65": {
     "color": "Blue",
@@ -582,7 +646,8 @@
     "inStock": 75,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "66": {
     "color": "White",
@@ -591,7 +656,8 @@
     "inStock": 83,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "67": {
     "color": "Brown",
@@ -600,7 +666,8 @@
     "inStock": 76,
     "material": "Cashmere",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "68": {
     "color": "White",
@@ -609,7 +676,8 @@
     "inStock": 88,
     "material": "Modal",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "long sleeve"
   },
   "69": {
     "color": "Beige",
@@ -618,7 +686,8 @@
     "inStock": 86,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "70": {
     "color": "Navy",
@@ -627,7 +696,8 @@
     "inStock": 55,
     "material": "Cashmere",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "sweater"
   },
   "71": {
     "color": "Black",
@@ -636,7 +706,8 @@
     "inStock": 56,
     "material": "Organic Cotton",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "72": {
     "color": "Burgundy",
@@ -645,7 +716,8 @@
     "inStock": 96,
     "material": "Modal",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "long sleeve"
   },
   "73": {
     "color": "Burgundy",
@@ -654,7 +726,8 @@
     "inStock": 94,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "long sleeve"
   },
   "74": {
     "color": "Blue",
@@ -663,7 +736,8 @@
     "inStock": 62,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "75": {
     "color": "Black",
@@ -672,7 +746,8 @@
     "inStock": 72,
     "material": "Merino Wool",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "long sleeve"
   },
   "76": {
     "color": "Green",
@@ -681,7 +756,8 @@
     "inStock": 71,
     "material": "Bamboo",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "77": {
     "color": "Brown",
@@ -690,7 +766,8 @@
     "inStock": 55,
     "material": "Silk",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "78": {
     "color": "Beige",
@@ -699,7 +776,8 @@
     "inStock": 13,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "79": {
     "color": "White",
@@ -708,7 +786,8 @@
     "inStock": 87,
     "material": "Merino Wool",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "long sleeve"
   },
   "80": {
     "color": "Beige",
@@ -717,7 +796,8 @@
     "inStock": 100,
     "material": "Bamboo",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "81": {
     "color": "White",
@@ -726,7 +806,8 @@
     "inStock": 77,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "long sleeve"
   },
   "82": {
     "color": "Brown",
@@ -735,7 +816,8 @@
     "inStock": 71,
     "material": "Wool",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "scarf"
   },
   "83": {
     "color": "Black",
@@ -744,7 +826,8 @@
     "inStock": 52,
     "material": "Merino Wool",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "long sleeve"
   },
   "84": {
     "color": "Blue",
@@ -753,7 +836,8 @@
     "inStock": 76,
     "material": "Bamboo",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "85": {
     "color": "Burgundy",
@@ -762,7 +846,8 @@
     "inStock": 63,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "long sleeve"
   },
   "86": {
     "color": "Black",
@@ -771,7 +856,8 @@
     "inStock": 86,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "87": {
     "color": "Brown",
@@ -780,7 +866,8 @@
     "inStock": 64,
     "material": "Merino Wool",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "long sleeve"
   },
   "88": {
     "color": "Navy",
@@ -789,7 +876,8 @@
     "inStock": 21,
     "material": "Acrylic Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "sweater"
   },
   "89": {
     "color": "White",
@@ -798,7 +886,8 @@
     "inStock": 89,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "90": {
     "color": "Red",
@@ -807,7 +896,8 @@
     "inStock": 30,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "91": {
     "color": "Green",
@@ -816,7 +906,8 @@
     "inStock": 27,
     "material": "Organic Cotton",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "92": {
     "color": "White",
@@ -825,7 +916,8 @@
     "inStock": 27,
     "material": "Bamboo",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "93": {
     "color": "Navy",
@@ -834,7 +926,8 @@
     "inStock": 74,
     "material": "Wool",
     "occasion": "Weekend",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "sweater"
   },
   "94": {
     "color": "Brown",
@@ -843,7 +936,8 @@
     "inStock": 62,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "long sleeve"
   },
   "95": {
     "color": "Black",
@@ -852,7 +946,8 @@
     "inStock": 9,
     "material": "Organic Cotton",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "96": {
     "color": "Black",
@@ -861,7 +956,8 @@
     "inStock": 49,
     "material": "Modal",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "long sleeve"
   },
   "97": {
     "color": "Blue",
@@ -870,7 +966,8 @@
     "inStock": 18,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "98": {
     "color": "Brown",
@@ -879,7 +976,8 @@
     "inStock": 66,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "long sleeve"
   },
   "99": {
     "color": "Brown",
@@ -888,7 +986,8 @@
     "inStock": 56,
     "material": "Cashmere",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "100": {
     "color": "Red",
@@ -897,7 +996,8 @@
     "inStock": 45,
     "material": "Bamboo",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "101": {
     "color": "Green",
@@ -906,7 +1006,8 @@
     "inStock": 22,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "102": {
     "color": "White",
@@ -915,7 +1016,8 @@
     "inStock": 14,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "103": {
     "color": "Beige",
@@ -924,7 +1026,8 @@
     "inStock": 5,
     "material": "Organic Cotton",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "104": {
     "color": "Green",
@@ -933,7 +1036,8 @@
     "inStock": 50,
     "material": "Bamboo",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "105": {
     "color": "Navy",
@@ -942,7 +1046,8 @@
     "inStock": 50,
     "material": "Wool",
     "occasion": "Weekend",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "sweater"
   },
   "106": {
     "color": "Black",
@@ -951,7 +1056,8 @@
     "inStock": 32,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "107": {
     "color": "Burgundy",
@@ -960,7 +1066,8 @@
     "inStock": 22,
     "material": "Merino Wool",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "long sleeve"
   },
   "108": {
     "color": "Any Color",
@@ -969,7 +1076,8 @@
     "inStock": 2,
     "material": "Acrylic Blend",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "sweater"
   },
   "109": {
     "color": "Gray",
@@ -978,7 +1086,8 @@
     "inStock": 51,
     "material": "Wool",
     "occasion": "Work",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "sweater"
   },
   "110": {
     "color": "Green",
@@ -987,7 +1096,8 @@
     "inStock": 36,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "111": {
     "color": "Burgundy",
@@ -996,7 +1106,8 @@
     "inStock": 47,
     "material": "Cashmere",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "112": {
     "color": "Burgundy",
@@ -1005,7 +1116,8 @@
     "inStock": 45,
     "material": "Cotton Blend",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "scarf"
   },
   "113": {
     "color": "Green",
@@ -1014,7 +1126,8 @@
     "inStock": 9,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "114": {
     "color": "White",
@@ -1023,7 +1136,8 @@
     "inStock": 5,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "long sleeve"
   },
   "115": {
     "color": "Green",
@@ -1032,7 +1146,8 @@
     "inStock": 9,
     "material": "Organic Cotton",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "116": {
     "color": "Navy",
@@ -1041,7 +1156,8 @@
     "inStock": 71,
     "material": "Acrylic Blend",
     "occasion": "Casual",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "sweater"
   },
   "117": {
     "color": "Black",
@@ -1050,7 +1166,8 @@
     "inStock": 42,
     "material": "Silk",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "118": {
     "color": "Green",
@@ -1059,7 +1176,8 @@
     "inStock": 44,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "long sleeve"
   },
   "119": {
     "color": "Beige",
@@ -1068,7 +1186,8 @@
     "inStock": 72,
     "material": "Organic Cotton",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "120": {
     "color": "Any Color",
@@ -1077,7 +1196,8 @@
     "inStock": 8,
     "material": "Acrylic Blend",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "sweater"
   },
   "121": {
     "color": "Green",
@@ -1086,7 +1206,8 @@
     "inStock": 19,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "long sleeve"
   },
   "122": {
     "color": "Blue",
@@ -1095,7 +1216,8 @@
     "inStock": 69,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "123": {
     "color": "Navy",
@@ -1104,7 +1226,8 @@
     "inStock": 90,
     "material": "Cotton Knit",
     "occasion": "Weekend",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "sweater"
   },
   "124": {
     "color": "Gray",
@@ -1113,7 +1236,8 @@
     "inStock": 43,
     "material": "Acrylic Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "sweater"
   },
   "125": {
     "color": "White",
@@ -1122,7 +1246,8 @@
     "inStock": 41,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "long sleeve"
   },
   "126": {
     "color": "Green",
@@ -1131,7 +1256,8 @@
     "inStock": 66,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "127": {
     "color": "Cream",
@@ -1140,7 +1266,8 @@
     "inStock": 64,
     "material": "Cotton Knit",
     "occasion": "Work",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "sweater"
   },
   "128": {
     "color": "Gray",
@@ -1149,7 +1276,8 @@
     "inStock": 80,
     "material": "Cotton Blend",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "scarf"
   },
   "129": {
     "color": "Black",
@@ -1158,7 +1286,8 @@
     "inStock": 15,
     "material": "Silk",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "130": {
     "color": "Burgundy",
@@ -1167,7 +1296,8 @@
     "inStock": 11,
     "material": "Wool",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "scarf"
   },
   "131": {
     "color": "White",
@@ -1176,7 +1306,8 @@
     "inStock": 61,
     "material": "Merino Wool",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "long sleeve"
   },
   "132": {
     "color": "Gray",
@@ -1185,7 +1316,8 @@
     "inStock": 89,
     "material": "Acrylic Blend",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "sweater"
   },
   "133": {
     "color": "Navy",
@@ -1194,7 +1326,8 @@
     "inStock": 41,
     "material": "Wool",
     "occasion": "Work",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "sweater"
   },
   "134": {
     "color": "Green",
@@ -1203,7 +1336,8 @@
     "inStock": 96,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "long sleeve"
   },
   "135": {
     "color": "Beige",
@@ -1212,7 +1346,8 @@
     "inStock": 81,
     "material": "Organic Cotton",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "136": {
     "color": "Black",
@@ -1221,7 +1356,8 @@
     "inStock": 21,
     "material": "Cotton Blend",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "scarf"
   },
   "137": {
     "color": "Blue",
@@ -1230,7 +1366,8 @@
     "inStock": 12,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "138": {
     "color": "Green",
@@ -1239,7 +1376,8 @@
     "inStock": 47,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "139": {
     "color": "Green",
@@ -1248,7 +1386,8 @@
     "inStock": 95,
     "material": "Organic Cotton",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "140": {
     "color": "Cream",
@@ -1257,7 +1396,8 @@
     "inStock": 16,
     "material": "Acrylic Blend",
     "occasion": "Casual",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "sweater"
   },
   "141": {
     "color": "Gray",
@@ -1266,7 +1406,8 @@
     "inStock": 21,
     "material": "Silk",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "142": {
     "color": "Black",
@@ -1275,7 +1416,8 @@
     "inStock": 4,
     "material": "Wool",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "scarf"
   },
   "143": {
     "color": "Burgundy",
@@ -1284,7 +1426,8 @@
     "inStock": 57,
     "material": "Cashmere",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "144": {
     "color": "Green",
@@ -1293,7 +1436,8 @@
     "inStock": 6,
     "material": "Bamboo",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "145": {
     "color": "Black",
@@ -1302,7 +1446,8 @@
     "inStock": 6,
     "material": "Silk",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "146": {
     "color": "Beige",
@@ -1311,7 +1456,8 @@
     "inStock": 3,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "147": {
     "color": "Blue",
@@ -1320,7 +1466,8 @@
     "inStock": 7,
     "material": "Organic Cotton",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "148": {
     "color": "Gray",
@@ -1329,7 +1476,8 @@
     "inStock": 22,
     "material": "Acrylic Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "sweater"
   },
   "149": {
     "color": "Cream",
@@ -1338,7 +1486,8 @@
     "inStock": 29,
     "material": "Wool",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "sweater"
   },
   "150": {
     "color": "Gray",
@@ -1347,7 +1496,8 @@
     "inStock": 1,
     "material": "Wool",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "scarf"
   },
   "151": {
     "color": "Black",
@@ -1356,7 +1506,8 @@
     "inStock": 6,
     "material": "Cashmere",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "152": {
     "color": "Black",
@@ -1365,7 +1516,8 @@
     "inStock": 33,
     "material": "Cotton Blend",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "scarf"
   },
   "153": {
     "color": "Gray",
@@ -1374,7 +1526,8 @@
     "inStock": 81,
     "material": "Silk",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "154": {
     "color": "Cream",
@@ -1383,7 +1536,8 @@
     "inStock": 16,
     "material": "Cashmere",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "sweater"
   },
   "155": {
     "color": "Green",
@@ -1392,7 +1546,8 @@
     "inStock": 39,
     "material": "Organic Cotton",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "156": {
     "color": "White",
@@ -1401,7 +1556,8 @@
     "inStock": 10,
     "material": "Modal",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "long sleeve"
   },
   "157": {
     "color": "Blue",
@@ -1410,7 +1566,8 @@
     "inStock": 11,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "158": {
     "color": "Navy",
@@ -1419,7 +1576,8 @@
     "inStock": 84,
     "material": "Cashmere",
     "occasion": "Casual",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "sweater"
   },
   "159": {
     "color": "Black",
@@ -1428,7 +1586,8 @@
     "inStock": 78,
     "material": "Cashmere",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "160": {
     "color": "Green",
@@ -1437,7 +1596,8 @@
     "inStock": 78,
     "material": "Modal",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "long sleeve"
   },
   "161": {
     "color": "Beige",
@@ -1446,7 +1606,8 @@
     "inStock": 8,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "162": {
     "color": "Cream",
@@ -1455,7 +1616,8 @@
     "inStock": 44,
     "material": "Cashmere",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "sweater"
   },
   "163": {
     "color": "Green",
@@ -1464,7 +1626,8 @@
     "inStock": 7,
     "material": "Cotton Knit",
     "occasion": "Work",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "sweater"
   },
   "164": {
     "color": "Cream",
@@ -1473,7 +1636,8 @@
     "inStock": 38,
     "material": "Cotton Blend",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "scarf"
   },
   "165": {
     "color": "White",
@@ -1482,7 +1646,8 @@
     "inStock": 26,
     "material": "Silk",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "166": {
     "color": "Brown",
@@ -1491,7 +1656,8 @@
     "inStock": 12,
     "material": "Cashmere",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "sweater"
   },
   "167": {
     "color": "Gray",
@@ -1500,7 +1666,8 @@
     "inStock": 48,
     "material": "Cotton Knit",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "sweater"
   },
   "168": {
     "color": "Green",
@@ -1509,7 +1676,8 @@
     "inStock": 23,
     "material": "Acrylic Blend",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "sweater"
   },
   "169": {
     "color": "Cream",
@@ -1518,7 +1686,8 @@
     "inStock": 70,
     "material": "Wool",
     "occasion": "Work",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "sweater"
   },
   "170": {
     "color": "Navy",
@@ -1527,7 +1696,8 @@
     "inStock": 14,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "long sleeve"
   },
   "171": {
     "color": "Navy",
@@ -1536,7 +1706,8 @@
     "inStock": 82,
     "material": "Merino Wool",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "long sleeve"
   },
   "172": {
     "color": "Blue",
@@ -1545,7 +1716,8 @@
     "inStock": 95,
     "material": "Bamboo",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "173": {
     "color": "Cream",
@@ -1554,7 +1726,8 @@
     "inStock": 96,
     "material": "Wool",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "sweater"
   },
   "174": {
     "color": "Cream",
@@ -1563,7 +1736,8 @@
     "inStock": 40,
     "material": "Wool",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "scarf"
   },
   "175": {
     "color": "White",
@@ -1572,7 +1746,8 @@
     "inStock": 83,
     "material": "Cashmere",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "176": {
     "color": "Navy",
@@ -1581,7 +1756,8 @@
     "inStock": 35,
     "material": "Cotton Blend",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "scarf"
   },
   "177": {
     "color": "White",
@@ -1590,7 +1766,8 @@
     "inStock": 80,
     "material": "Silk",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "178": {
     "color": "Burgundy",
@@ -1599,7 +1776,8 @@
     "inStock": 38,
     "material": "Cashmere",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "sweater"
   },
   "179": {
     "color": "Cream",
@@ -1608,7 +1786,8 @@
     "inStock": 13,
     "material": "Cashmere",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "180": {
     "color": "Green",
@@ -1617,7 +1796,8 @@
     "inStock": 79,
     "material": "Acrylic Blend",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "sweater"
   },
   "181": {
     "color": "Green",
@@ -1626,7 +1806,8 @@
     "inStock": 24,
     "material": "Silk",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "182": {
     "color": "Navy",
@@ -1635,7 +1816,8 @@
     "inStock": 51,
     "material": "Cotton Blend",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "long sleeve"
   },
   "183": {
     "color": "Cream",
@@ -1644,7 +1826,8 @@
     "inStock": 27,
     "material": "Cotton Knit",
     "occasion": "Weekend",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "sweater"
   },
   "184": {
     "color": "Blue",
@@ -1653,7 +1836,8 @@
     "inStock": 91,
     "material": "Bamboo",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "t-shirt"
   },
   "185": {
     "color": "Gray",
@@ -1662,7 +1846,8 @@
     "inStock": 61,
     "material": "Wool",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "sweater"
   },
   "186": {
     "color": "Brown",
@@ -1671,7 +1856,8 @@
     "inStock": 40,
     "material": "Cashmere",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "sweater"
   },
   "187": {
     "color": "Any Color",
@@ -1680,7 +1866,8 @@
     "inStock": 25,
     "material": "Merino Wool",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "long sleeve"
   },
   "188": {
     "color": "Any Color",
@@ -1689,7 +1876,8 @@
     "inStock": 85,
     "material": "Modal",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "long sleeve"
   },
   "189": {
     "color": "Navy",
@@ -1698,7 +1886,8 @@
     "inStock": 19,
     "material": "Silk",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "190": {
     "color": "Brown",
@@ -1707,7 +1896,8 @@
     "inStock": 87,
     "material": "Cashmere",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "sweater"
   },
   "191": {
     "color": "Burgundy",
@@ -1716,7 +1906,8 @@
     "inStock": 9,
     "material": "Cotton Knit",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "sweater"
   },
   "192": {
     "color": "Gray",
@@ -1725,7 +1916,8 @@
     "inStock": 2,
     "material": "Acrylic Blend",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "sweater"
   },
   "193": {
     "color": "Green",
@@ -1734,7 +1926,8 @@
     "inStock": 61,
     "material": "Wool",
     "occasion": "Work",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "sweater"
   },
   "194": {
     "color": "Green",
@@ -1743,7 +1936,8 @@
     "inStock": 22,
     "material": "Wool",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "scarf"
   },
   "195": {
     "color": "Blue",
@@ -1752,7 +1946,8 @@
     "inStock": 44,
     "material": "Organic Cotton",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "196": {
     "color": "Green",
@@ -1761,7 +1956,8 @@
     "inStock": 71,
     "material": "Cotton Blend",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "scarf"
   },
   "197": {
     "color": "Burgundy",
@@ -1770,7 +1966,8 @@
     "inStock": 88,
     "material": "Wool",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "sweater"
   },
   "198": {
     "color": "Cream",
@@ -1779,7 +1976,8 @@
     "inStock": 42,
     "material": "Wool",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "scarf"
   },
   "199": {
     "color": "Navy",
@@ -1788,7 +1986,8 @@
     "inStock": 24,
     "material": "Cashmere",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "200": {
     "color": "White",
@@ -1797,7 +1996,8 @@
     "inStock": 88,
     "material": "Cotton Blend",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "scarf"
   },
   "201": {
     "color": "Any Color",
@@ -1806,7 +2006,8 @@
     "inStock": 2,
     "material": "Cotton",
     "occasion": "Casual",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "long sleeve"
   },
   "202": {
     "color": "Brown",
@@ -1815,7 +2016,8 @@
     "inStock": 11,
     "material": "Cashmere",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "sweater"
   },
   "203": {
     "color": "Navy",
@@ -1824,7 +2026,8 @@
     "inStock": 9,
     "material": "Cashmere",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "scarf"
   },
   "204": {
     "color": "Burgundy",
@@ -1833,7 +2036,8 @@
     "inStock": 49,
     "material": "Acrylic Blend",
     "occasion": "Weekend",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "sweater"
   },
   "205": {
     "color": "Gray",
@@ -1842,7 +2046,8 @@
     "inStock": 99,
     "material": "Wool",
     "occasion": "Work",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "sweater"
   },
   "206": {
     "color": "Green",
@@ -1851,7 +2056,8 @@
     "inStock": 52,
     "material": "Wool",
     "occasion": "Work",
-    "season": "Summer"
+    "season": "Summer",
+    "type": "scarf"
   },
   "207": {
     "color": "Blue",
@@ -1860,7 +2066,8 @@
     "inStock": 25,
     "material": "Organic Cotton",
     "occasion": "Party",
-    "season": "Spring"
+    "season": "Spring",
+    "type": "t-shirt"
   },
   "208": {
     "color": "Blue",
@@ -1870,16 +2077,95 @@
     "material": "Cotton",
     "occasion": "Casual",
     "season": "Spring",
+    "type": "pants",
     "image": "/pants-1.png"
   },
   "209": {
     "color": "Black",
     "price": 79.99,
-    "store": "Zara",
+    "store": "H&M",
     "inStock": 38,
-    "material": "Cotton",
+    "material": "Denim",
+    "occasion": "Work",
+    "season": "Spring",
+    "type": "pants",
+    "image": "/pants-2.png"
+  },
+  "210": {
+    "color": "Black",
+    "price": 79.99,
+    "store": "Gap",
+    "inStock": 38,
+    "material": "Cotton Blend",
+    "occasion": "Weekend",
+    "season": "Spring",
+    "type": "pants",
+    "image": "/pants3.png"
+  },
+  "211": {
+    "color": "Beige",
+    "price": 79.99,
+    "store": "Patagonia",
+    "inStock": 38,
+    "material": "Organic Cotton",
     "occasion": "Casual",
     "season": "Spring",
-    "image": "/pants-2.png"
+    "type": "pants",
+    "image": "/pants5.png"
+  },
+  "212": {
+    "color": "Green",
+    "price": 79.99,
+    "store": "Uniqlo",
+    "inStock": 38,
+    "material": "Bamboo",
+    "occasion": "Party",
+    "season": "Spring",
+    "type": "pants",
+    "image": "/pants6.png"
+  },
+  "213": {
+    "color": "Black",
+    "price": 79.99,
+    "store": "Zara",
+    "inStock": 38,
+    "material": "Modal",
+    "occasion": "Work",
+    "season": "Spring",
+    "type": "pants",
+    "image": "/pants7.png"
+  },
+  "214": {
+    "color": "Gray",
+    "price": 79.99,
+    "store": "H&M",
+    "inStock": 38,
+    "material": "Merino Wool",
+    "occasion": "Weekend",
+    "season": "Spring",
+    "type": "pants",
+    "image": "/pants8.png"
+  },
+  "215": {
+    "color": "Blue",
+    "price": 79.99,
+    "store": "Gap",
+    "inStock": 38,
+    "material": "Cotton Knit",
+    "occasion": "Casual",
+    "season": "Spring",
+    "type": "pants",
+    "image": "/pants9.png"
+  },
+  "216": {
+    "color": "Blue",
+    "price": 79.99,
+    "store": "Patagonia",
+    "inStock": 38,
+    "material": "Acrylic Blend",
+    "occasion": "Party",
+    "season": "Spring",
+    "type": "pants",
+    "image": "/pants10.png"
   }
 }
