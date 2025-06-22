@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect } from "react"
-import { X, Heart, Shirt, Filter, ChevronLeft, ChevronRight, Palette, Plus } from "lucide-react"
+import { Heart, Shirt, Filter, ChevronLeft, ChevronRight, Palette, Plus } from "lucide-react"
 import AnimatedBackground from "../components/AnimatedBackground"
 import { isColorMatch, getSkinToneDescription, SkinToneAnalysis } from "../../lib/skin-tone-analysis"
 import { getStoredSkinTone, useSkinToneListener } from "../../lib/skin-tone-storage"
@@ -547,11 +547,13 @@ export default function SwipePage() {
 
   const handleSwipe = (direction: "left" | "right") => {
     if (!currentProduct) return
-
-    if (direction === "right") {
-      setLikedProducts(prev => new Set([...prev, currentProduct.id]))
-    }
     setCurrentProduct(getRandomProduct())
+  }
+
+  const handleLike = () => {
+    if (!currentProduct) return
+    setLikedProducts(prev => new Set([...prev, currentProduct.id]))
+    // Show a brief "like added" message could be added here
   }
 
   const handleAddToCloset = () => {
@@ -960,13 +962,13 @@ export default function SwipePage() {
           )}
         </div>
 
-        {/* Product Card - Now with fixed height and internal flex layout */}
-        <div className="glass-card rounded-3xl overflow-hidden mb-6 transform transition-all duration-300 hover:scale-105 h-[580px] flex flex-col">
+        {/* Product Card - Reduced height to fit screen without scrolling */}
+        <div className="glass-card rounded-3xl overflow-hidden mb-4 transform transition-all duration-300 hover:scale-105 h-[480px] flex flex-col">
           <div className="relative flex-shrink-0">
             <img 
               src={currentProduct.image} 
               alt={currentProduct.description} 
-              className="w-full h-96 object-cover"
+              className="w-full h-80 object-cover"
               onError={(e) => {
                 // Fallback to placeholder if image fails to load
                 (e.target as HTMLImageElement).src = "/placeholder.svg?height=600&width=400"
@@ -1031,66 +1033,76 @@ export default function SwipePage() {
           </div>
         </div>
 
-        {/* Action Buttons - Moved outside the card */}
-        <div className="flex justify-center gap-4 mt-6">
-          <div className="flex flex-col items-center">
-            <button
-              onClick={() => handleSwipe("left")}
-              className="w-14 h-14 rounded-full bg-gradient-to-r from-red-500 to-pink-500 flex items-center justify-center animate-pulse-glow"
-              aria-label="Pass"
-            >
-              <X className="text-white" size={24} />
-            </button>
-            <span className="text-xs text-gray-400 mt-1">Pass</span>
+        {/* Navigation and Action Layout */}
+        <div className="flex items-center justify-between gap-4">
+          {/* Left Arrow */}
+          <button
+            onClick={() => handleSwipe("left")}
+            className="w-12 h-12 rounded-full bg-gradient-to-r from-red-500 to-pink-500 flex items-center justify-center animate-pulse-glow flex-shrink-0"
+            aria-label="Previous"
+          >
+            <ChevronLeft className="text-white" size={24} />
+          </button>
+
+          {/* Action Buttons - Centered */}
+          <div className="flex justify-center gap-3 flex-1">
+            <div className="flex flex-col items-center">
+              <button
+                onClick={handleLike}
+                className="w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center animate-pulse-glow"
+                aria-label="Like"
+              >
+                <Heart className="text-white" size={20} />
+              </button>
+              <span className="text-xs text-gray-400 mt-1">Like</span>
+            </div>
+
+            <div className="flex flex-col items-center">
+              <button
+                onClick={handleAddToCloset}
+                className="w-12 h-12 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500 flex items-center justify-center animate-pulse-glow"
+                aria-label="Add to Closet"
+              >
+                <Plus className="text-white" size={20} />
+              </button>
+              <span className="text-xs text-gray-400 mt-1">Closet</span>
+            </div>
+
+            <div className="flex flex-col items-center">
+              <button
+                onClick={() => {
+                  if (currentProduct) {
+                    window.location.href = `/try-on/${currentProduct.id}`
+                  }
+                }}
+                className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 flex items-center justify-center animate-pulse-glow"
+                aria-label="Try on"
+              >
+                <Shirt className="text-white" size={20} />
+              </button>
+              <span className="text-xs text-gray-400 mt-1">Try On</span>
+            </div>
+
+            <div className="flex flex-col items-center">
+              <button
+                onClick={() => setShowFilters(true)}
+                className="w-12 h-12 rounded-full bg-gradient-to-r from-yellow-500 to-orange-500 flex items-center justify-center animate-pulse-glow"
+                aria-label="Filters"
+              >
+                <Filter className="text-white" size={20} />
+              </button>
+              <span className="text-xs text-gray-400 mt-1">Filters</span>
+            </div>
           </div>
 
-          <div className="flex flex-col items-center">
-            <button
-              onClick={() => handleSwipe("right")}
-              className="w-14 h-14 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center animate-pulse-glow"
-              aria-label="Like"
-            >
-              <Heart className="text-white" size={24} />
-            </button>
-            <span className="text-xs text-gray-400 mt-1">Like</span>
-          </div>
-
-          <div className="flex flex-col items-center">
-            <button
-              onClick={handleAddToCloset}
-              className="w-14 h-14 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500 flex items-center justify-center animate-pulse-glow"
-              aria-label="Add to Closet"
-            >
-              <Plus className="text-white" size={24} />
-            </button>
-            <span className="text-xs text-gray-400 mt-1">Add to Closet</span>
-          </div>
-
-          <div className="flex flex-col items-center">
-            <button
-              onClick={() => {
-                if (currentProduct) {
-                  window.location.href = `/try-on/${currentProduct.id}`
-                }
-              }}
-              className="w-14 h-14 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 flex items-center justify-center animate-pulse-glow"
-              aria-label="Try on"
-            >
-              <Shirt className="text-white" size={24} />
-            </button>
-            <span className="text-xs text-gray-400 mt-1">Try On</span>
-          </div>
-
-          <div className="flex flex-col items-center">
-            <button
-              onClick={() => setShowFilters(true)}
-              className="w-14 h-14 rounded-full bg-gradient-to-r from-yellow-500 to-orange-500 flex items-center justify-center animate-pulse-glow"
-              aria-label="Filters"
-            >
-              <Filter className="text-white" size={24} />
-            </button>
-            <span className="text-xs text-gray-400 mt-1">Filters</span>
-          </div>
+          {/* Right Arrow */}
+          <button
+            onClick={() => handleSwipe("right")}
+            className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center animate-pulse-glow flex-shrink-0"
+            aria-label="Next"
+          >
+            <ChevronRight className="text-white" size={24} />
+          </button>
         </div>
 
         {/* Liked Products Counter */}
@@ -1110,7 +1122,7 @@ export default function SwipePage() {
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold gradient-text">Filters</h2>
               <button onClick={() => setShowFilters(false)} className="text-gray-400 hover:text-white">
-                <X size={24} />
+                <span className="text-2xl">×</span>
               </button>
             </div>
 
