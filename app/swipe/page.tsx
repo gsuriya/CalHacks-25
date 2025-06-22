@@ -88,6 +88,17 @@ export default function SwipePage() {
   const [activeFilters, setActiveFilters] = useState<ActiveFilters | null>(null)
   const [filterSystemReady, setFilterSystemReady] = useState(false)
 
+  // Load closet items and check for similar items
+  const [closetItems, setClosetItems] = useState<Array<{
+    id: string
+    name: string
+    type: string
+    color: string
+    image: string
+    price: string
+    description: string
+  }>>([])
+
   // Load stored skin tone analysis on component mount
   useEffect(() => {
     const stored = getStoredSkinTone()
@@ -101,6 +112,19 @@ export default function SwipePage() {
     console.log("Skin tone updated via listener:", analysis)
     setSkinToneAnalysis(analysis)
   })
+
+  // Load closet items from localStorage
+  useEffect(() => {
+    const savedItems = localStorage.getItem('closetItems')
+    if (savedItems) {
+      try {
+        setClosetItems(JSON.parse(savedItems))
+      } catch (error) {
+        console.error('Error loading closet items:', error)
+        setClosetItems([])
+      }
+    }
+  }, [])
 
   // Check for voice-extracted filters and apply them
   useEffect(() => {
@@ -545,12 +569,20 @@ export default function SwipePage() {
 
     // Get existing closet items
     const existingItems = localStorage.getItem('closetItems')
-    let closetItems = existingItems ? JSON.parse(existingItems) : []
+    let existingClosetItems = existingItems ? JSON.parse(existingItems) : []
 
     // Check if item already exists
-    if (!closetItems.some((item: any) => item.id === currentProduct.id)) {
-      closetItems.push(closetItem)
-      localStorage.setItem('closetItems', JSON.stringify(closetItems))
+    if (!existingClosetItems.some((item: any) => item.id === currentProduct.id)) {
+      existingClosetItems.push(closetItem)
+      localStorage.setItem('closetItems', JSON.stringify(existingClosetItems))
+      
+      // Update local state immediately for similarity checking
+      setClosetItems(existingClosetItems)
+      
+      console.log('👔 Added to closet:', {
+        item: closetItem,
+        totalItems: existingClosetItems.length
+      })
     }
     
     // Move to next product regardless
@@ -693,6 +725,27 @@ export default function SwipePage() {
     const normalizedColor = colorName.toLowerCase().trim()
     return colorMap[normalizedColor] || '#6B46C1' // Default to purple if color not found
   }
+
+  // Check if current product is similar to items in closet
+  const checkSimilarInCloset = (product: Product) => {
+    if (!product || closetItems.length === 0) return null
+    
+    const similarItem = closetItems.find(item => 
+      item.type.toLowerCase() === product.type.toLowerCase() && 
+      item.color.toLowerCase() === product.color.toLowerCase()
+    )
+    
+    if (similarItem) {
+      console.log('👔 Similar item found in closet:', {
+        current: { type: product.type, color: product.color },
+        existing: { type: similarItem.type, color: similarItem.color, name: similarItem.name }
+      })
+    }
+    
+    return similarItem
+  }
+
+  const similarItemInCloset = currentProduct ? checkSimilarInCloset(currentProduct) : null
 
   if (loading) {
     return (
@@ -919,12 +972,33 @@ export default function SwipePage() {
                 (e.target as HTMLImageElement).src = "/placeholder.svg?height=600&width=400"
               }}
             />
-            <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1">
+            
+            {/* Price and Stock Status - positioned to avoid overlap */}
+            <div className={`absolute top-4 right-4 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1 transition-all duration-300 ${similarItemInCloset ? 'mt-16' : ''}`}>
               <span className="text-white font-semibold">{currentProduct.price}</span>
             </div>
-            <div className="absolute top-4 left-4 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1">
-              <span className="text-white text-sm">{currentProduct.stock_status}</span>
+            <div className={`absolute top-4 left-4 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1 transition-all duration-300 ${similarItemInCloset ? 'mt-16' : ''}`}>
+              <span className="text-white text-sm">
+                {currentProduct.stock_status}
+              </span>
             </div>
+
+            {/* Similar item warning - positioned to not overlap */}
+            {similarItemInCloset && (
+              <div className="absolute top-2 left-2 right-2 bg-gradient-to-r from-yellow-500/95 to-orange-500/95 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg border border-yellow-400/30">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">👔</span>
+                  <div className="flex-1">
+                    <p className="text-white font-bold text-sm leading-tight">
+                      Similar item in closet
+                    </p>
+                    <p className="text-white/90 text-xs font-medium">
+                      You own: {similarItemInCloset.name || `${similarItemInCloset.color} ${similarItemInCloset.type}`}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="p-6 flex-1 flex flex-col">
