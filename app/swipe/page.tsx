@@ -77,6 +77,9 @@ export default function SwipePage() {
   const [error, setError] = useState<string | null>(null)
   const [showFilters, setShowFilters] = useState(false)
   const [likedProducts, setLikedProducts] = useState<Set<string>>(new Set())
+  const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null)
+  const [isAnimating, setIsAnimating] = useState(false)
+  const [slideInDirection, setSlideInDirection] = useState<'left' | 'right' | null>(null)
   
   // Skin tone analysis state
   const [skinToneAnalysis, setSkinToneAnalysis] = useState<SkinToneAnalysis | null>(null)
@@ -546,8 +549,27 @@ export default function SwipePage() {
   }
 
   const handleSwipe = (direction: "left" | "right") => {
-    if (!currentProduct) return
-    setCurrentProduct(getRandomProduct())
+    if (!currentProduct || isAnimating) return
+    
+    // Start swipe out animation
+    setIsAnimating(true)
+    setSwipeDirection(direction)
+    
+    // After swipe out completes, change product and slide in from opposite direction
+    setTimeout(() => {
+      setCurrentProduct(getRandomProduct())
+      setSwipeDirection(null)
+      
+      // Set slide-in direction (opposite of swipe direction)
+      const slideDirection = direction === 'left' ? 'right' : 'left'
+      setSlideInDirection(slideDirection)
+      
+      // Clear slide-in animation after it completes
+      setTimeout(() => {
+        setSlideInDirection(null)
+        setIsAnimating(false)
+      }, 200)
+    }, 200) // Swipe out duration
   }
 
   const handleLike = () => {
@@ -963,7 +985,12 @@ export default function SwipePage() {
         </div>
 
         {/* Product Card - Reduced height to fit screen without scrolling */}
-        <div className="glass-card rounded-3xl overflow-hidden mb-4 transform transition-all duration-300 hover:scale-105 h-[480px] flex flex-col">
+        <div className={`glass-card rounded-3xl overflow-hidden mb-4 transform transition-all duration-300 hover:scale-105 h-[480px] flex flex-col ${
+          swipeDirection === 'left' ? 'animate-swipe-left' : 
+          swipeDirection === 'right' ? 'animate-swipe-right' :
+          slideInDirection === 'left' ? 'animate-slide-in-from-left' :
+          slideInDirection === 'right' ? 'animate-slide-in-from-right' : ''
+        }`}>
           <div className="relative flex-shrink-0">
             <img 
               src={currentProduct.image} 
@@ -1038,7 +1065,10 @@ export default function SwipePage() {
           {/* Left Arrow */}
           <button
             onClick={() => handleSwipe("left")}
-            className="w-12 h-12 rounded-full bg-gradient-to-r from-red-500 to-pink-500 flex items-center justify-center animate-pulse-glow flex-shrink-0"
+            disabled={isAnimating}
+            className={`w-12 h-12 rounded-full bg-gradient-to-r from-red-500 to-pink-500 flex items-center justify-center animate-pulse-glow flex-shrink-0 transition-opacity duration-200 ${
+              isAnimating ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'
+            }`}
             aria-label="Previous"
           >
             <ChevronLeft className="text-white" size={24} />
@@ -1098,7 +1128,10 @@ export default function SwipePage() {
           {/* Right Arrow */}
           <button
             onClick={() => handleSwipe("right")}
-            className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center animate-pulse-glow flex-shrink-0"
+            disabled={isAnimating}
+            className={`w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center animate-pulse-glow flex-shrink-0 transition-opacity duration-200 ${
+              isAnimating ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'
+            }`}
             aria-label="Next"
           >
             <ChevronRight className="text-white" size={24} />

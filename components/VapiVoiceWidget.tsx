@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Vapi from '@vapi-ai/web';
 import { VAPI_CONFIG } from '../lib/vapi-config';
 import { handleFilterRequest } from '../src/voice/handleFilterRequest';
+import { handleClosetRecommendation } from '../src/voice/handleClosetRecommendation';
 
 interface VoiceFilters {
   color: string | null
@@ -86,25 +87,74 @@ const VapiVoiceWidget: React.FC<VapiVoiceWidgetProps> = ({
 
   // Filter extraction handler using our new voice agent
   const handleFilterExtraction = useCallback(async () => {
-    if (!filterTranscript.trim() || !onFiltersExtracted) return;
+    if (!filterTranscript.trim()) return;
     
     try {
-      console.log('🎤 VapiVoiceWidget: Extracting filters from transcript:', filterTranscript);
+      console.log('🎤 VapiVoiceWidget: Processing transcript:', filterTranscript);
       
-      // Use our new voice agent
-      const filters = await handleFilterRequest([filterTranscript]);
+      const text = filterTranscript.toLowerCase();
+      console.log('🎤 VapiVoiceWidget: Lowercase text:', text);
       
-      console.log('🎤 VapiVoiceWidget: Extracted filters:', filters);
+      // Check if this is a closet recommendation request
+      const hasRecommend = text.includes('recommendation') || text.includes('recommend');
+      const hasClosetOrTryOn = text.includes('closet') || text.includes('try on');
+      const isClosetRecommendation = hasRecommend && hasClosetOrTryOn;
       
-      if (filters && Object.keys(filters).some(key => filters[key as keyof VoiceFilters] !== null)) {
-        onFiltersExtracted(filters);
+      console.log('🎤 VapiVoiceWidget: Detection check:', {
+        hasRecommend,
+        hasClosetOrTryOn,
+        isClosetRecommendation,
+        originalText: filterTranscript
+      });
+      
+              if (isClosetRecommendation) {
+          console.log('👔 Detected closet recommendation request - calling handleClosetRecommendation');
+          
+          try {
+            const recommendation = await handleClosetRecommendation();
+            console.log('👔 Recommendation result:', recommendation);
+            
+            if (recommendation && recommendation.shirt && recommendation.pant) {
+              console.log('👔 Got valid recommendation, navigating to multi try-on...');
+              console.log('👔 Shirt:', recommendation.shirt.color, recommendation.shirt.type);
+              console.log('👔 Pant:', recommendation.pant.color, recommendation.pant.type);
+              console.log('👔 Reasoning:', recommendation.reasoning);
+              
+              // Navigate to multi try-on with the recommended items
+              const queryParams = `item=${recommendation.shirt.id}&item=${recommendation.pant.id}`;
+              console.log('👔 Navigating to:', `/try-on/multi?${queryParams}`);
+              window.location.href = `/try-on/multi?${queryParams}`;
+              return;
+            } else {
+              console.log('❌ No valid recommendation available');
+              if (!recommendation) {
+                console.log('❌ Recommendation is null');
+              } else if (!recommendation.shirt) {
+                console.log('❌ No shirt in recommendation');
+              } else if (!recommendation.pant) {
+                console.log('❌ No pant in recommendation');
+              }
+            }
+          } catch (error) {
+            console.error('❌ Error during closet recommendation:', error);
+          }
+        } else {
+        // Regular filter request
+        console.log('🎤 VapiVoiceWidget: Extracting filters from transcript');
+        
+        const filters = await handleFilterRequest([filterTranscript]);
+        console.log('🎤 VapiVoiceWidget: Extracted filters:', filters);
+        
+        if (filters && Object.keys(filters).some(key => filters[key as keyof VoiceFilters] !== null) && onFiltersExtracted) {
+          onFiltersExtracted(filters);
+        }
       }
       
       // Reset filter state
       setFilterModeActive(false);
       setFilterTranscript('');
     } catch (error) {
-      console.error('🎤 VapiVoiceWidget: Filter extraction failed:', error);
+      console.error('🎤 VapiVoiceWidget: Processing failed:', error);
       setFilterModeActive(false);
       setFilterTranscript('');
     }
@@ -124,14 +174,17 @@ const VapiVoiceWidget: React.FC<VapiVoiceWidgetProps> = ({
         if (message.role === 'user') {
           const text = message.text.toLowerCase();
           
-          // Check for clothing requests - broader detection
+          // Check for clothing requests or closet recommendations - broader detection
           const hasClothingRequest = text.includes('pants') || text.includes('shirt') || text.includes('sweater') || 
                                    text.includes('jeans') || text.includes('trousers') || text.includes('scarf') ||
                                    text.includes('recommend') || text.includes('filter') || text.includes('show me') ||
                                    text.includes('find me') || text.includes('looking for') || text.includes('want');
           
-          if (hasClothingRequest) {
-            console.log('🎤 VapiVoiceWidget: Clothing request detected, activating filter mode');
+          const hasClosetRequest = (text.includes('recommendation') || text.includes('recommend')) && 
+                                 (text.includes('closet') || text.includes('try on'));
+          
+          if (hasClothingRequest || hasClosetRequest) {
+            console.log('🎤 VapiVoiceWidget: Clothing/closet request detected, activating filter mode');
             setFilterModeActive(true);
             setFilterTranscript(message.text); // Use full message text
             console.log('🎤 VapiVoiceWidget: Set filter transcript to:', message.text);
